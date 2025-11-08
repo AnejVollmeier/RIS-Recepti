@@ -1,0 +1,39 @@
+# Frontend .gitignore 
+# Environment
+.env
+.env.*
+application.properties
+application-*.properties
+**/application.properties
+
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+build/
+.vite/
+.next/
+.nuxt/
+# Caches
+.cache/
+.parcel-cache/
+
+# Coverage / test output
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db

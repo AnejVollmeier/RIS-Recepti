@@ -1,0 +1,94 @@
+.formcontainer {
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px auto;
+}
+.formcontainer h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-size: bold;
+  color: rgb(30, 117, 193);
+}
+.onlyformContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+  border: 2px solid hsl(208, 73%, 54%);
+  border-radius: 5px;
+  padding: 20px;
+  margin: auto 20px;
+  background-color: hsla(223, 8%, 18%, 0.9);
+}
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  width: 100%;
+}
+.inputGroup input,
+.inputGroup textarea {
+  padding: 8px;
+  border: 1px solid hsl(208, 73%, 54%);
+  background-color: hsla(223, 8%, 18%, 0.9);
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #f8f8f8;
+}
+.inputGroup textarea {
+  resize: vertical;
+  height: 100px;
+}
+.sestavineInput {
+  margin-bottom: 15px;
+}
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: hsl(208, 73%, 54%);
+}
+input {
+  border: 1px solid hsl(208, 73%, 54%);
+  background-color: hsla(223, 8%, 18%, 0.9);
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #f8f8f8;
+  height: 30px;
+}
+.buttonGroup button {
+  height: 30px;
+  width: 30px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: hsl(194, 99%, 45%);
+  cursor: pointer;
+  color: #fff;
+}
+.buttonGroup button:hover {
+  background-color: hsl(194, 99%, 55%);
+  cursor: pointer;
+}
+.buttonGroup .minusButton {
+  background-color: hsl(313, 73%, 54%);
+}
+
+.buttonGroup .minusButton:hover {
+  background-color: hsl(313, 73%, 64%);
+  cursor: pointer;
+}
+button[type="submit"] {
+  display: flex;
+  padding: 10px 20px;
+  background-color: hsl(208, 73%, 54%);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 10px auto;
+}

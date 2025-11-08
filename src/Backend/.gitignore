@@ -1,0 +1,32 @@
+# Backend .gitignore 
+# Environment
+.env
+.env.*
+# Spring / Java properties 
+application.properties
+application-*.properties
+src/main/resources/application*.properties
+**/application.properties
+
+# Java build outputs
+target/
+build/
+out/
+# Gradle / Maven
+.gradle/
+.mvn/
+
+# IDEs 
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+*.jar
+*.war
+*.ear
+logs/
+*.log
+.DS_Store
+Thumbs.db
+node_modules/

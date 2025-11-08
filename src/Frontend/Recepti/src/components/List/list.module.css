@@ -1,0 +1,180 @@
+.listContainer {
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px auto;
+}
+.listContainer h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-size: bold;
+  color: hsl(208, 73%, 54%);
+}
+.onlyListContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  border-radius: 5px;
+  padding: 20px;
+  margin: auto;
+}
+.onlyListContainer h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  font-size: bold;
+  color: hsl(208, 73%, 54%);
+}
+.onlyListContainer h3 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  font-size: bold;
+  color: hsl(208, 73%, 54%);
+}
+.receptCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid hsl(208, 73%, 54%);
+  background-color: hsla(223, 8%, 18%, 0.9);
+  color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+  width: 50%;
+}
+.buttonGroup button {
+  height: 30px;
+  width: 100px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: hsl(194, 99%, 45%);
+  cursor: pointer;
+}
+.buttonGroup button:hover {
+  background-color: hsl(194, 99%, 55%);
+  cursor: pointer;
+}
+.buttonGroup .deleteButton {
+  background-color: hsl(313, 73%, 54%);
+}
+
+.buttonGroup .deleteButton:hover {
+  background-color: hsl(313, 73%, 64%);
+  cursor: pointer;
+}
+
+.updateContainer {
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px auto;
+}
+.updateContainer h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-size: bold;
+  color: rgb(30, 117, 193);
+}
+.onlyUpdateContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 400px;
+  border: 2px solid hsl(208, 73%, 54%);
+  border-radius: 5px;
+  padding: 20px;
+  margin: auto 20px;
+  background-color: hsla(223, 8%, 18%, 0.9);
+}
+.updateInputGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  width: 100%;
+}
+.updateInputGroup input,
+.updateInputGroup textarea {
+  padding: 8px;
+  border: 1px solid hsl(208, 73%, 54%);
+  background-color: hsla(223, 8%, 18%, 0.9);
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #f8f8f8;
+}
+.updateInputGroup textarea {
+  resize: vertical;
+  height: 100px;
+}
+.updateSestavineInput {
+  margin-bottom: 15px;
+}
+label {
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: hsl(208, 73%, 54%);
+}
+input {
+  border: 1px solid hsl(208, 73%, 54%);
+  background-color: hsla(223, 8%, 18%, 0.9);
+  border-radius: 4px;
+  font-size: 1rem;
+  color: #f8f8f8;
+  height: 30px;
+}
+.updateButtonGroup button {
+  height: 30px;
+  width: 30px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: hsl(194, 99%, 45%);
+  cursor: pointer;
+}
+.updateButtonGroup button:hover {
+  background-color: hsl(194, 99%, 55%);
+  cursor: pointer;
+}
+.updateButtonGroup .minusButton {
+  background-color: hsl(313, 73%, 54%);
+}
+
+.updateButtonGroup .minusButton:hover {
+  background-color: hsl(313, 73%, 64%);
+  cursor: pointer;
+}
+button[type="submit"] {
+  display: flex;
+  padding: 10px 20px;
+  background-color: hsl(208, 73%, 54%);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 10px auto;
+}
+.searchContainer input {
+  margin-right: 20px;
+}
+.searchContainer button {
+  padding: 5px 10px;
+  background-color: hsl(208, 73%, 54%);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-right: 10px;
+}
+.searchContainer button:hover {
+  background-color: hsl(208, 73%, 64%);
+  cursor: pointer;
+}
