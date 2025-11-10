@@ -2,10 +2,248 @@
 
 ## -Kratek opis:
 
-RIS-Recepti je aplikacija za upravljanje in deljenje kuharskih receptov. Projekt ima ločen frontend (JavaScript) in backend (Java), kar omogoča neodvisen razvoj in zagon komponent.
+RIS-Recepti je aplikacija za upravljanje in deljenje kuharskih receptov. Projekt ima ločen frontend (JavaScript/React, Vite) in backend (Java, Spring Boot), kar omogoča neodvisen razvoj, testiranje in zagon komponent.
 
 ## -Dokumentacija za razvijalce:
 
+- Struktura projekta (pomembne mape):
+
+  - `Backend/Recepti/` - Java Spring Boot aplikacija (Maven). Glavna koda je pod `Backend/Recepti/src/main/java/...`.
+  - `Frontend/Recepti/` - React aplikacija (Vite, npm). Glavna koda je pod `Frontend/Recepti/src/`.
+  - Testi backend: `Backend/Recepti/src/test/java/...`.
+
+- Standardi kodiranja in smernice:
+
+  - Java: sledite običajnim Java konvencijam (ime paketov, camelCase za metode, PascalCase za razrede). Uporabite JDK 17+.
+  - Spring Boot: konfiguracije v `application.properties` (ali `application.yml`) v `src/main/resources`.
+  - JavaScript/React: upoštevajte ESLint konfiguracijo v `Frontend/Recepti/` in dovoljene konvencije v `eslint.config.js`.
+  - Komit sporočila: kratka predpona (`feat:`, `fix:`, `chore:`) + opis.
+
+- Orodja in priporočene verzije:
+
+  - Java 17 ali višje
+  - Maven 3.8+
+  - Node.js 18+ in npm 9+
+  - MySQL 8.x
+  - Vite (kot del frontend setup)
+
+- Build in test ukazi (osnovno):
+
+  - Backend: v mapi `Backend/Recepti/`:
+
+    ```cmd
+    mvn clean package
+    mvn test
+    mvn spring-boot:run
+    ```
+
+  - Frontend: v mapi `Frontend/Recepti/`:
+
+    ```cmd
+    npm install
+    npm run dev
+    npm run build
+    ```
+
 ## -Navodila za nameščanje:
 
+1. Namestite potrebna orodja (Java JDK, Maven, Node.js, npm, MySQL).
+2. Nastavite MySQL bazo:
+
+   - Za ta projekt naj bo MySQL dostopen na `localhost:3307`.
+   - Ustvarite bazo `recepti` (če še ne obstaja):
+
+     ```sql
+     CREATE DATABASE recepti CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+     ```
+
+   - Uporabnik: `root`, geslo: `root` (kot v primer konfiguracije spodaj).
+
+3. Backend konfiguracija:
+
+   - Konfiguracijske vrednosti so v datoteki `Backend/src/main/resources/application.properties`.
+   - Če datoteka v repozitoriju nosi drugačen ime/put (npr. `Backend/src/main/resourses/aplication.propertis`), preverite in po potrebi popravite ime mape/ datoteke.
+   - Primer vsebine (kopirajte/ustvarite v `Backend/src/main/resources/application.properties`):
+
+     ```properties
+     spring.application.name=Recepti
+     spring.datasource.url=jdbc:mysql://localhost:3307/recepti
+     spring.datasource.username=root
+     spring.datasource.password=root
+     spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+     spring.jpa.show-sql=true
+     spring.jpa.generate-ddl=true
+     ```
+
+   - Zaženite backend (v `Backend/Recepti/`):
+
+     ```cmd
+     mvn spring-boot:run
+     ```
+
+4. Frontend konfiguracija:
+
+   - V mapi `Frontend/Recepti/` ustvarite datoteko `.env` (ali urejte obstoječo) z naslednjo vsebino:
+
+     ```text
+     VITE_BASE_URL=http://localhost:8080/
+     ```
+
+   - Namestite odvisnosti in zaženite razvojni strežnik:
+
+     ```cmd
+     npm install
+     npm run dev
+     ```
+
+5. Dostop do aplikacije:
+   - Backend bo privzeto na `http://localhost:8080/` (če je port spremenjen, preverite `application.properties`).
+   - Frontend bo po privzetem na naslovu, ki ga izpiše `npm run dev` (običajno `http://localhost:5173/`), in kliče backend preko `VITE_BASE_URL`.
+
 ## - Navodila za razvijalce:
+
+- Veje in prispevanje:
+
+  - Uporabljajte veje po vzorcu `feature/*`, `bugfix/*`, `hotfix/*`.
+  - Pred pošiljanjem Pull Requesta poskrbite za:
+    - preizkus osnovne funkcionalnosti lokalno;
+    - če je mogoče, enotske teste;
+    - posodobitev dokumentacije, če so spremembe v API-ju ali konfiguraciji.
+
+- Testiranje in linting:
+
+  - Za backend zaženite `mvn test`.
+  - Za frontend zaženite `npm run lint` (če je ukaz definiran) ali `npm test`.
+
+- Lokalno debugging:
+
+  - Backend: uporabite IDE (IntelliJ/VSCode) za zagon aplikacije v debug načinu.
+  - Frontend: uporabite brskalnik in devtools.
+
+- Kontakt in PR pravila:
+  - Jasno opišite namen PR-a in navodila za testiranje.
+  - Označite morebitne odvisnosti ali zahteve za bazo.
+
+## Konfiguracija okolja (pregled)
+
+- Frontend `.env` (v `Frontend/Recepti/.env`):
+
+```text
+VITE_BASE_URL=http://localhost:8080/
+```
+
+- Backend `application.properties` (v `Backend/src/main/resources/application.properties`):
+
+```properties
+spring.application.name=Recepti
+spring.datasource.url=jdbc:mysql://localhost:3307/recepti
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.show-sql=true
+spring.jpa.generate-ddl=true
+```
+
+---
+
+Opomba: če imate v projektu datoteko `Backend/src/main/resourses/aplication.propertis` s tipkarsko napako v imenu, jo preimenujte v `resources/application.properties`, da jo Spring Boot pravilno poišče.
+
+## - Struktura repozitorija
+
+Spodaj je drevesna struktura repozitorija `RIS-Recepti` — prikazane so glavne mape in datoteke, da poenostavimo orientacijo v projektu.
+
+```text
+RIS-Recepti/
+├── .gitignore
+├── README.md
+├── docs/
+├── src/
+│   ├── Backend/
+│   │   ├── .gitignore
+│   │   ├── .idea/
+│   │   │   ├── .gitignore
+│   │   │   ├── Backend.iml
+│   │   │   ├── compiler.xml
+│   │   │   ├── copilot.data.migration.agent.xml
+│   │   │   ├── copilot.data.migration.ask.xml
+│   │   │   ├── copilot.data.migration.ask2agent.xml
+│   │   │   ├── copilot.data.migration.edit.xml
+│   │   │   ├── encodings.xml
+│   │   │   ├── IntelliLang.xml
+│   │   │   ├── jarRepositories.xml
+│   │   │   ├── misc.xml
+│   │   │   └── modules.xml
+│   │   ├── Mysql/
+│   │   │   └── .idea/
+│   │   │       ├── .gitignore
+│   │   │       ├── copilot.data.migration.agent.xml
+│   │   │       ├── copilot.data.migration.ask.xml
+│   │   │       ├── copilot.data.migration.ask2agent.xml
+│   │   │       ├── copilot.data.migration.edit.xml
+│   │   │       ├── data_source_mapping.xml
+│   │   │       ├── dataSources.xml
+│   │   │       └── inspectionProfiles/
+│   │   │           └── Project_Default.xml
+│   │   └── Recepti/
+│   │       ├── .gitattributes
+│   │       ├── mvnw
+│   │       ├── mvnw.cmd
+│   │       ├── pom.xml
+│   │       ├── .mvn/
+│   │       │   └── wrapper/
+│   │       │       └── maven-wrapper.properties
+│   │       └── src/
+│   │           ├── main/
+│   │           │   ├── java/
+│   │           │   │   └── si/um/feri/ris/projekt/Recepti/
+│   │           │   │       ├── ReceptiApplication.java
+│   │           │   │       ├── dao/
+│   │           │   │       │   └── ReceptiJpaDao.java
+│   │           │   │       ├── rest/
+│   │           │   │       │   ├── InfoController.java
+│   │           │   │       │   └── ReceptiRestController.java
+│   │           │   │       └── vao/
+│   │           │   │           ├── Recepti.java
+│   │           │   │           └── Sestavine.java
+│   │           │   └── resources/
+│   │           │       └── application.properties
+│   │           └── test/
+│   │               └── java/
+│   │                   └── si/um/feri/ris/projekt/Recepti/
+│   │                       └── ReceptiApplicationTests.java
+│   │       └── target/
+│   │           ├── classes/
+│   │           │   ├── application.properties
+│   │           │   └── si/um/feri/ris/projekt/Recepti/
+│   │           │       ├── dao/
+│   │           │       ├── rest/
+│   │           │       └── vao/
+│   │           ├── generated-sources/
+│   │           │   └── annotations/
+│   │           ├── generated-test-sources/
+│   │           │   └── test-annotations/
+│   │           └── test-classes/
+│   │               └── si/um/feri/ris/projekt/Recepti/
+│   └── Frontend/
+│       └── Recepti/
+│           ├── .env
+│           ├── .gitignore
+│           ├── eslint.config.js
+│           ├── index.html
+│           ├── package.json
+│           ├── vite.config.js
+│           └── src/
+│               ├── App.css
+│               ├── App.jsx
+│               ├── index.css
+│               ├── main.jsx
+│               ├── components/
+│               │   ├── Form/
+│               │   │   ├── form.jsx
+│               │   │   └── form.module.css
+│               │   └── List/
+│               │       ├── list.jsx
+│               │       └── list.module.css
+│               └── server/
+│                   └── server.js
+```
