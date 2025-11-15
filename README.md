@@ -6,15 +6,39 @@ RIS-Recepti je aplikacija za upravljanje in deljenje kuharskih receptov. Projekt
 
 ## -Dokumentacija za razvijalce:
 
-- Struktura projekta (pomembne mape):
+- Struktura projekta (pomembne datoteke in mape):
 
-  - `Backend/Recepti/` - Java Spring Boot aplikacija (Maven). Glavna koda je pod `Backend/Recepti/src/main/java/...`.
-  - `Frontend/Recepti/` - React aplikacija (Vite, npm). Glavna koda je pod `Frontend/Recepti/src/`.
-  - Testi backend: `Backend/Recepti/src/test/java/...`.
+  ```text
+  RIS-Recepti/
+  ├── .gitignore
+  ├── README.md
+  ├── docs/
+  │   └── naloge.md            # Besednjak in ostale dokumentacije
+  └── src/
+      ├── Backend/
+      │   └── Recepti/
+      │       ├── pom.xml
+      │       └── src/main/java/si/um/feri/ris/projekt/Recepti/
+      │           ├── ReceptiApplication.java
+      │           ├── dao/ReceptiJpaDao.java
+      │           ├── rest/ReceptiRestController.java
+      │           └── vao/
+      │               ├── Recepti.java
+      │               └── Sestavine.java
+      │       └── src/main/resources/application.properties
+      └── Frontend/
+          └── Recepti/
+              ├── package.json
+              ├── .env
+              └── src/
+                  ├── main.jsx
+                  ├── App.jsx
+                  └── components/
+  ```
 
 - Standardi kodiranja in smernice:
 
-  - Java: sledite običajnim Java konvencijam (ime paketov, camelCase za metode, PascalCase za razrede). Uporabite JDK 17+.
+  - Java: sledite običajnim Java konvencam (ime paketov, camelCase za metode, PascalCase za razrede). Uporabite JDK 17+.
   - Spring Boot: konfiguracije v `application.properties` (ali `application.yml`) v `src/main/resources`.
   - JavaScript/React: upoštevajte ESLint konfiguracijo v `Frontend/Recepti/` in dovoljene konvencije v `eslint.config.js`.
   - Komit sporočila: kratka predpona (`feat:`, `fix:`, `chore:`) + opis.
@@ -147,103 +171,3 @@ spring.jpa.generate-ddl=true
 ---
 
 Opomba: če imate v projektu datoteko `Backend/src/main/resourses/aplication.propertis` s tipkarsko napako v imenu, jo preimenujte v `resources/application.properties`, da jo Spring Boot pravilno poišče.
-
-## - Struktura repozitorija
-
-Spodaj je drevesna struktura repozitorija `RIS-Recepti` — prikazane so glavne mape in datoteke, da poenostavimo orientacijo v projektu.
-
-```text
-RIS-Recepti/
-├── .gitignore
-├── README.md
-├── docs/
-├── src/
-│   ├── Backend/
-│   │   ├── .gitignore
-│   │   ├── .idea/
-│   │   │   ├── .gitignore
-│   │   │   ├── Backend.iml
-│   │   │   ├── compiler.xml
-│   │   │   ├── copilot.data.migration.agent.xml
-│   │   │   ├── copilot.data.migration.ask.xml
-│   │   │   ├── copilot.data.migration.ask2agent.xml
-│   │   │   ├── copilot.data.migration.edit.xml
-│   │   │   ├── encodings.xml
-│   │   │   ├── IntelliLang.xml
-│   │   │   ├── jarRepositories.xml
-│   │   │   ├── misc.xml
-│   │   │   └── modules.xml
-│   │   ├── Mysql/
-│   │   │   └── .idea/
-│   │   │       ├── .gitignore
-│   │   │       ├── copilot.data.migration.agent.xml
-│   │   │       ├── copilot.data.migration.ask.xml
-│   │   │       ├── copilot.data.migration.ask2agent.xml
-│   │   │       ├── copilot.data.migration.edit.xml
-│   │   │       ├── data_source_mapping.xml
-│   │   │       ├── dataSources.xml
-│   │   │       └── inspectionProfiles/
-│   │   │           └── Project_Default.xml
-│   │   └── Recepti/
-│   │       ├── .gitattributes
-│   │       ├── mvnw
-│   │       ├── mvnw.cmd
-│   │       ├── pom.xml
-│   │       ├── .mvn/
-│   │       │   └── wrapper/
-│   │       │       └── maven-wrapper.properties
-│   │       └── src/
-│   │           ├── main/
-│   │           │   ├── java/
-│   │           │   │   └── si/um/feri/ris/projekt/Recepti/
-│   │           │   │       ├── ReceptiApplication.java
-│   │           │   │       ├── dao/
-│   │           │   │       │   └── ReceptiJpaDao.java
-│   │           │   │       ├── rest/
-│   │           │   │       │   ├── InfoController.java
-│   │           │   │       │   └── ReceptiRestController.java
-│   │           │   │       └── vao/
-│   │           │   │           ├── Recepti.java
-│   │           │   │           └── Sestavine.java
-│   │           │   └── resources/
-│   │           │       └── application.properties
-│   │           └── test/
-│   │               └── java/
-│   │                   └── si/um/feri/ris/projekt/Recepti/
-│   │                       └── ReceptiApplicationTests.java
-│   │       └── target/
-│   │           ├── classes/
-│   │           │   ├── application.properties
-│   │           │   └── si/um/feri/ris/projekt/Recepti/
-│   │           │       ├── dao/
-│   │           │       ├── rest/
-│   │           │       └── vao/
-│   │           ├── generated-sources/
-│   │           │   └── annotations/
-│   │           ├── generated-test-sources/
-│   │           │   └── test-annotations/
-│   │           └── test-classes/
-│   │               └── si/um/feri/ris/projekt/Recepti/
-│   └── Frontend/
-│       └── Recepti/
-│           ├── .env
-│           ├── .gitignore
-│           ├── eslint.config.js
-│           ├── index.html
-│           ├── package.json
-│           ├── vite.config.js
-│           └── src/
-│               ├── App.css
-│               ├── App.jsx
-│               ├── index.css
-│               ├── main.jsx
-│               ├── components/
-│               │   ├── Form/
-│               │   │   ├── form.jsx
-│               │   │   └── form.module.css
-│               │   └── List/
-│               │       ├── list.jsx
-│               │       └── list.module.css
-│               └── server/
-│                   └── server.js
-```
