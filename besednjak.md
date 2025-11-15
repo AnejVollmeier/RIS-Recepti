@@ -1,0 +1,21 @@
+# Besednjak
+
+- Recept: Entiteta, ki vsebuje naslov, opis, seznam sestavin, korake priprave in metapodatke (avtor, datum, ocena).
+- Sestavina: Element recepta z imenom in količino (npr. "200 g moke").
+- Kategorija (Category): Vsebinski sklop receptov (npr. Sladice, Glavne jedi), uporaben za filtriranje.
+- Oznaka / Tag: Poljubna oznaka za dodatno označevanje receptov (npr. hitro, vegansko, brezglutensko).
+- Ocena (Rating): Numerična ocena recepta (1–5), pogosto uporabljena za izračun povprečne ocene.
+- Komentar (Comment): Besedilno sporočilo, ki ga uporabnik doda pod recept.
+- Favoriti (Favorites): Seznam receptov, ki jih uporabnik shranjuje kot priljubljene.
+- Uporabniški profil (User Profile): Podatki o uporabniku (ime, email, avatar, bio).
+- Frontend: Odjemalska aplikacija napisana v React (Vite) — prikazuje uporabniški vmesnik in kliče REST API backend-a.
+- Backend: Strežniška aplikacija napisana s Spring Boot — skrbi za poslovno logiko, persistenco in REST API.
+- REST API: HTTP vmesnik za izmenjavo podatkov med frontend-om in backend-om.
+- CRUD: Operacije Create, Read, Update, Delete, osnovne operacije nad entitetami (recept, sestavina).
+- Endpoint: Končna URL točka REST API-ja (npr. GET /api/recepti).
+- Request Body / Response Body: JSON podatki, ki jih API prejme ali vrne.
+- Avtentikacija (Authentication): Proces preverjanja identitete uporabnika (prijava).
+- Avtorizacija (Authorization): Določanje pravic uporabnika (npr. admin lahko briše vsebino).
+- Admin: Uporabniški račun z razširjenimi pravicami (upravljanje uporabnikov, moderacija vsebin).
+- DTO (Data Transfer Object): Oblika podatkov, ki se uporablja za prenos med plastmi aplikacije.
+- ER diagram: Diagram entitet in njihovih relacij (predlog za nadaljnjo dokumentacijo baze).
