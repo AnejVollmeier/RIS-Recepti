@@ -1,10 +1,20 @@
 # RIS-Recepti
 
+## -Kazalo:
+- [Kratek opis](#-kratek-opis)
+- [Vizija projekta](#-vizija-projekta)
+- [Dokumentacija za razvijalce](#-dokumentacija-za-razvijalce)
+- [Navodila za nameščanje](#-navodila-za-nameščanje)
+- [Navodila za razvijalce](#-navodila-za-razvijalce)
+- [Konfiguracija okolja (pregled)](#-konfiguracija-okolja-pregled)
+- [Diagram Primerov Uporabe](#-diagram-primerov-uporabe)
+- [Besednjak](#-besednjak)
+
 ## -Kratek opis:
 
 RIS-Recepti je aplikacija za upravljanje in deljenje kuharskih receptov. Projekt ima ločen frontend (JavaScript/React, Vite) in backend (Java, Spring Boot), kar omogoča neodvisen razvoj, testiranje in zagon komponent.
 
-## Vizija projekta
+## -Vizija projekta
 RIS-Recepti je spletna aplikacija za upravljanje in deljenje kuhinjskih receptov, namenjena tako domačim kuharjem kot tudi naprednejšim uporabnikom, ki želijo organizirati, ocenjevati in izmenjevati recepte. Cilj aplikacije je poenostaviti iskanje in shranjevanje zaupanih receptov, olajšati pripravo obrokov s samodejno generiranimi seznamih sestavin in izboljšati skupnostno izmenjavo znanj z ocenjevanjem, komentarji in moderiranjem vsebin. Z RIS-Recepti želimo izboljšati uporabniško izkušnjo pri iskanju idej za kuhanje, prihraniti čas pri sestavljanju nakupovalnih list in podpreti kakovostno vsebino, ki jo ustvarjajo uporabniki.
 
 Kljub temu da je aplikacija enostavna za uporabo, je dovolj zmogljiva, da podpira:
@@ -135,7 +145,7 @@ Ciljna publika: domači kuharji, študenti, zaposleni, kuharski navdušenci in a
    - Backend bo privzeto na `http://localhost:8080/` (če je port spremenjen, preverite `application.properties`).
    - Frontend bo po privzetem na naslovu, ki ga izpiše `npm run dev` (običajno `http://localhost:5173/`), in kliče backend preko `VITE_BASE_URL`.
 
-## - Navodila za razvijalce:
+## -Navodila za razvijalce:
 
 - Veje in prispevanje:
 
@@ -159,7 +169,7 @@ Ciljna publika: domači kuharji, študenti, zaposleni, kuharski navdušenci in a
   - Jasno opišite namen PR-a in navodila za testiranje.
   - Označite morebitne odvisnosti ali zahteve za bazo.
 
-## Konfiguracija okolja (pregled)
+## -Konfiguracija okolja (pregled)
 
 - Frontend `.env` (v `Frontend/Recepti/.env`):
 
@@ -183,9 +193,10 @@ spring.jpa.generate-ddl=true
 
 Opomba: če imate v projektu datoteko `Backend/src/main/resourses/aplication.propertis` s tipkarsko napako v imenu, jo preimenujte v `resources/application.properties`, da jo Spring Boot pravilno poišče.
 
-# Diagram Primerov Uporabe
-(image.png)
-# Besednjak
+## -Diagram Primerov Uporabe
+![Diagram primerov uporabe](docs/dpu.png)
+
+## -Besednjak
 
 | Izraz | Razlaga |
 |---|---|
