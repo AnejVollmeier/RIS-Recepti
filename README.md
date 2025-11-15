@@ -183,6 +183,8 @@ spring.jpa.generate-ddl=true
 
 Opomba: če imate v projektu datoteko `Backend/src/main/resourses/aplication.propertis` s tipkarsko napako v imenu, jo preimenujte v `resources/application.properties`, da jo Spring Boot pravilno poišče.
 
+# Diagram Primerov Uporabe
+(image.png)
 # Besednjak
 
 | Izraz | Razlaga |

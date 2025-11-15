@@ -10,11 +10,11 @@
                 <mxCell id="3" value="Recepti" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
                     <mxGeometry x="400" y="80" width="110" height="70" as="geometry"/>
                 </mxCell>
-                <mxCell id="4" value="Registriran uporabnik" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
-                    <mxGeometry x="70" y="190" width="40" height="70" as="geometry"/>
+                <mxCell id="4" value="Registriran&amp;nbsp; &amp;nbsp;uporabnik" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="180" width="40" height="70" as="geometry"/>
                 </mxCell>
                 <mxCell id="5" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;Neregistriran uporabnik&lt;/span&gt;" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
-                    <mxGeometry x="60" y="410" width="40" height="70" as="geometry"/>
+                    <mxGeometry x="70" y="410" width="40" height="70" as="geometry"/>
                 </mxCell>
                 <mxCell id="6" value="Admin" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
                     <mxGeometry x="780" y="300" width="40" height="70" as="geometry"/>
