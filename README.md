@@ -4,6 +4,17 @@
 
 RIS-Recepti je aplikacija za upravljanje in deljenje kuharskih receptov. Projekt ima ločen frontend (JavaScript/React, Vite) in backend (Java, Spring Boot), kar omogoča neodvisen razvoj, testiranje in zagon komponent.
 
+## Vizija projekta
+RIS-Recepti je spletna aplikacija za upravljanje in deljenje kuhinjskih receptov, namenjena tako domačim kuharjem kot tudi naprednejšim uporabnikom, ki želijo organizirati, ocenjevati in izmenjevati recepte. Cilj aplikacije je poenostaviti iskanje in shranjevanje zaupanih receptov, olajšati pripravo obrokov s samodejno generiranimi seznamih sestavin in izboljšati skupnostno izmenjavo znanj z ocenjevanjem, komentarji in moderiranjem vsebin. Z RIS-Recepti želimo izboljšati uporabniško izkušnjo pri iskanju idej za kuhanje, prihraniti čas pri sestavljanju nakupovalnih list in podpreti kakovostno vsebino, ki jo ustvarjajo uporabniki.
+
+Kljub temu da je aplikacija enostavna za uporabo, je dovolj zmogljiva, da podpira:
+- hitro iskanje receptov po sestavinah, dietah in oznakah,
+- enostavno ustvarjanje in urejanje receptov (vključno z nalaganjem fotografij),
+- organizacijo receptov z zvezdicami/oznakami in shranjevanjem v osebne sezname,
+- sodelovanje skupnosti (ocene, komentarji, poročila in moderacija).
+
+Ciljna publika: domači kuharji, študenti, zaposleni, kuharski navdušenci in administratorji/urejevalci vsebine.
+
 ## -Dokumentacija za razvijalce:
 
 - Struktura projekta (pomembne datoteke in mape):
