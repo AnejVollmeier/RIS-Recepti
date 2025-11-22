@@ -1,6 +1,7 @@
 # RIS-Recepti
 
 ## -Kazalo:
+
 - [Kratek opis](#-kratek-opis)
 - [Vizija projekta](#-vizija-projekta)
 - [Dokumentacija za razvijalce](#-dokumentacija-za-razvijalce)
@@ -15,9 +16,11 @@
 RIS-Recepti je aplikacija za upravljanje in deljenje kuharskih receptov. Projekt ima ločen frontend (JavaScript/React, Vite) in backend (Java, Spring Boot), kar omogoča neodvisen razvoj, testiranje in zagon komponent.
 
 ## -Vizija projekta
+
 RIS-Recepti je spletna aplikacija za upravljanje in deljenje kuhinjskih receptov, namenjena tako domačim kuharjem kot tudi naprednejšim uporabnikom, ki želijo organizirati, ocenjevati in izmenjevati recepte. Cilj aplikacije je poenostaviti iskanje in shranjevanje zaupanih receptov, olajšati pripravo obrokov s samodejno generiranimi seznamih sestavin in izboljšati skupnostno izmenjavo znanj z ocenjevanjem, komentarji in moderiranjem vsebin. Z RIS-Recepti želimo izboljšati uporabniško izkušnjo pri iskanju idej za kuhanje, prihraniti čas pri sestavljanju nakupovalnih list in podpreti kakovostno vsebino, ki jo ustvarjajo uporabniki.
 
 Kljub temu da je aplikacija enostavna za uporabo, je dovolj zmogljiva, da podpira:
+
 - hitro iskanje receptov po sestavinah, dietah in oznakah,
 - enostavno ustvarjanje in urejanje receptov (vključno z nalaganjem fotografij),
 - organizacijo receptov z zvezdicami/oznakami in shranjevanjem v osebne sezname,
@@ -194,28 +197,18 @@ spring.jpa.generate-ddl=true
 Opomba: če imate v projektu datoteko `Backend/src/main/resourses/aplication.propertis` s tipkarsko napako v imenu, jo preimenujte v `resources/application.properties`, da jo Spring Boot pravilno poišče.
 
 ## -Diagram Primerov Uporabe
+
 ![Diagram primerov uporabe](docs/dpu.png)
 
 ## -Besednjak
 
-| Izraz | Razlaga |
-|---|---|
-| Recept | Entiteta, ki vsebuje naslov, opis, seznam sestavin, korake priprave in metapodatke (avtor, datum, ocena). |
-| Sestavina | Element recepta z imenom in količino (npr. "200 g moke"). |
-| Kategorija (Category) | Vsebinski sklop receptov (npr. Sladice, Glavne jedi), uporaben za filtriranje. |
-| Oznaka / Tag | Poljubna oznaka za dodatno označevanje receptov (npr. hitro, vegansko, brezglutensko). |
-| Ocena (Rating) | Numerična ocena recepta (1–5), pogosto uporabljena za izračun povprečne ocene. |
-| Komentar (Comment) | Besedilno sporočilo, ki ga uporabnik doda pod recept. |
-| Favoriti (Favorites) | Seznam receptov, ki jih uporabnik shranjuje kot priljubljene. |
-| Uporabniški profil (User Profile) | Podatki o uporabniku (ime, email, avatar, bio). |
-| Frontend | Odjemalska aplikacija napisana v React (Vite) — prikazuje uporabniški vmesnik in kliče REST API backend-a. |
-| Backend | Strežniška aplikacija napisana s Spring Boot — skrbi za poslovno logiko, persistenco in REST API. |
-| REST API | HTTP vmesnik za izmenjavo podatkov med frontend-om in backend-om. |
-| CRUD | Operacije Create, Read, Update, Delete, osnovne operacije nad entitetami (recept, sestavina). |
-| Endpoint | Končna URL točka REST API-ja (npr. GET /api/recepti). |
-| Request Body / Response Body | JSON podatki, ki jih API prejme ali vrne. |
-| Avtentikacija (Authentication) | Proces preverjanja identitete uporabnika (prijava). |
-| Avtorizacija (Authorization) | Določanje pravic uporabnika (npr. admin lahko briše vsebino). |
-| Admin | Uporabniški račun z razširjenimi pravicami (upravljanje uporabnikov, moderacija vsebin). |
-| DTO (Data Transfer Object) | Oblika podatkov, ki se uporablja za prenos med plastmi aplikacije. |
-| ER diagram | Diagram entitet in njihovih relacij (predlog za nadaljnjo dokumentacijo baze). |
+| Izraz                             | Razlaga                                                                                                   |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Recept                            | Entiteta, ki vsebuje naslov, opis, seznam sestavin, korake priprave in metapodatke (avtor, datum, ocena). |
+| Sestavina                         | Element recepta z imenom in količino (npr. "200 g moke").                                                 |
+| Kategorija (Category)             | Vsebinski sklop receptov (npr. Sladice, Glavne jedi), uporaben za filtriranje.                            |
+| Oznaka / Tag                      | Poljubna oznaka za dodatno označevanje receptov (npr. hitro, vegansko, brezglutensko).                    |
+| Ocena (Rating)                    | Numerična ocena recepta (1–5), pogosto uporabljena za izračun povprečne ocene.                            |
+| Komentar (Comment)                | Besedilno sporočilo, ki ga uporabnik doda pod recept.                                                     |
+| Favoriti (Favorites)              | Seznam receptov, ki jih uporabnik shranjuje kot priljubljene.                                             |
+| Uporabniški profil (User Profile) | Podatki o uporabniku (ime, email, avatar, bio).                                                           |
