@@ -21,10 +21,9 @@ Registriran uporabnik želi v sistem dodati svoj recept, da ga lahko kasneje upo
 
 1. Uporabnik se prijavi v sistem.
 2. Izbere možnost »Dodajanje svojih receptov«.
-3. Vpiše naslov, opis, sestavine, korake priprave ter druge podatke.
-4. Po želji doda sliko.
-5. Klikne gumb »Shrani recept«.
-6. Sistem potrdi shranjevanje in recept se prikaže med uporabnikovimi recepti.
+3. Vpiše naslov, opis, sestavine.
+4. Klikne gumb »Dodaj recept«.
+5. Sistem potrdi shranjevanje in recept se prikaže med uporabnikovimi recepti.
 
 ## Alternativni tokovi
 
@@ -62,8 +61,8 @@ Registriran uporabnik želi popraviti ali posodobiti že dodan recept (npr. popr
 2. Odpre seznam svojih receptov.
 3. Izbere recept, ki ga želi spremeniti.
 4. Klikne na možnost »Uredi recept«.
-5. Spremeni želene podatke (npr. sestavine, korake, naslov).
-6. Klikne »Shrani spremembe«.
+5. Spremeni želene podatke (npr. sestavine, naslov).
+6. Klikne »Posodobi spremembe«.
 7. Sistem posodobi recept in prikaže posodobljeno verzijo.
 
 ## Alternativni tokovi
