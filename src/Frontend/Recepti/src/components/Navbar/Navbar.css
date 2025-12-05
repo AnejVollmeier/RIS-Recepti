@@ -1,0 +1,28 @@
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background-color: hsl(180, 2%, 12%);
+  margin-bottom: 30px;
+}
+
+.nav-link {
+  padding: 12px 24px;
+  background-color: hsla(223, 8%, 18%, 0.9);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
