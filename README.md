@@ -37,18 +37,42 @@ Ciljna publika: domači kuharji, študenti, zaposleni, kuharski navdušenci in a
   ├── .gitignore
   ├── README.md
   ├── docs/
-  │   └── naloge.md            # Besednjak in ostale dokumentacije
+  │   ├── RazredniDiagram.md   # Razredni diagram in opisi
+  │   ├── razredniDiagram.png
+  │   ├── dpu.png              # Diagram primerov uporabe
+  │   └── Funkcionalnosti.md
   └── src/
       ├── Backend/
       │   └── Recepti/
       │       ├── pom.xml
       │       └── src/main/java/si/um/feri/ris/projekt/Recepti/
       │           ├── ReceptiApplication.java
-      │           ├── dao/ReceptiJpaDao.java
-      │           ├── rest/ReceptiRestController.java
+      │           ├── dao/
+      │           │   ├── ReceptiJpaDao.java
+      │           │   ├── UporabnikDao.java
+      │           │   ├── KomentarDao.java
+      │           │   ├── OcenaDao.java
+      │           │   ├── VsecekDao.java
+      │           │   ├── JedilnikDao.java
+      │           │   └── AlergenDao.java
+      │           ├── rest/
+      │           │   ├── ReceptiRestController.java
+      │           │   ├── UporabnikRestController.java
+      │           │   ├── KomentarRestController.java
+      │           │   ├── OcenaRestController.java
+      │           │   ├── VsecekRestController.java
+      │           │   ├── JedilnikRestController.java
+      │           │   └── AlergenRestController.java
       │           └── vao/
       │               ├── Recepti.java
-      │               └── Sestavine.java
+      │               ├── Sestavine.java
+      │               ├── Uporabnik.java
+      │               ├── Vloga.java (enum: USER, ADMIN)
+      │               ├── Komentar.java
+      │               ├── Ocena.java
+      │               ├── Vsecek.java
+      │               ├── Jedilnik.java
+      │               └── Alergen.java
       │       └── src/main/resources/application.properties
       └── Frontend/
           └── Recepti/
