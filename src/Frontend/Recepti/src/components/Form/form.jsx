@@ -32,7 +32,7 @@ function Form() {
     };
     console.log("Pošiljam payload:", payload);
     try {
-      const result = await api.post("/recepti", payload);
+      const result = await api.post("/api/recepti", payload);
       console.log("Odgovor:", result.data);
       try {
         window.dispatchEvent(

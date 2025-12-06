@@ -1,7 +1,9 @@
+import Login from "../components/Login/Login";
+
 function Prijava() {
   return (
     <div>
-      <h1 className="page-title">Prijava</h1>
+      <Login />
     </div>
   );
 }

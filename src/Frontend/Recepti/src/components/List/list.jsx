@@ -14,7 +14,7 @@ function List() {
   useEffect(() => {
     const pridobiRecepte = async () => {
       try {
-        const response = await api.get("/recepti");
+        const response = await api.get("/api/recepti");
         setRecepti(response.data);
         console.log("Pridobljeni recepti:", response.data);
       } catch (error) {
@@ -32,18 +32,27 @@ function List() {
   }, []);
 
   const handleSearch = async () => {
-    if (!searchId) return;
+    const idValue = searchId.trim();
+    if (!idValue) return;
+
+    const numId = parseInt(idValue);
+    if (isNaN(numId)) {
+      alert("Prosim vnesi veljavno številko.");
+      return;
+    }
+
     try {
-      const resp = await api.get(`/recepti/${searchId}`);
-      if (resp && resp.data) {
-        setRecepti([resp.data]);
-      } else {
-        setRecepti([]);
-      }
-      setSearchId("");
+      const resp = await api.get(`/api/recepti/${numId}`);
+      setRecepti([resp.data]);
+      console.log("Najden recept:", resp.data);
     } catch (err) {
       console.error("Napaka pri iskanju recepta:", err);
-      setRecepti([]);
+      if (err.response?.status === 404) {
+        alert(`Recept z ID ${numId} ne obstaja.`);
+      } else {
+        alert("Napaka pri iskanju recepta.");
+      }
+    } finally {
       setSearchId("");
     }
   };
@@ -52,7 +61,7 @@ function List() {
     const q = searchName.trim();
     if (!q) return;
     try {
-      const resp = await api.get("/recepti", { params: { ime: q } });
+      const resp = await api.get("/api/recepti", { params: { ime: q } });
       setRecepti(resp.data || []);
     } catch (err) {
       console.error("Napaka pri iskanju po imenu:", err);
@@ -64,7 +73,7 @@ function List() {
 
   const handleShowAll = async () => {
     try {
-      const resp = await api.get(`/recepti`);
+      const resp = await api.get(`/api/recepti`);
       setRecepti(resp.data || []);
       setSearchId("");
     } catch (err) {
@@ -74,7 +83,7 @@ function List() {
 
   const izbrisiRecept = async (id) => {
     try {
-      await api.delete(`/recepti/${id}`);
+      await api.delete(`/api/recepti/${id}`);
       setRecepti((prev) => prev.filter((recept) => recept.id !== id));
       console.log(`Recept z ID ${id} je bil izbrisan.`);
     } catch (error) {
@@ -120,7 +129,7 @@ function List() {
       sestavine: sestavine.map((s) => ({ naziv: s.ime, kolicina: s.kolicina })),
     };
     try {
-      const resp = await api.put(`/recepti/${editingId}`, payload);
+      const resp = await api.put(`/api/recepti/${editingId}`, payload);
       setRecepti((prev) =>
         prev.map((r) => (r.id === editingId ? resp.data : r))
       );
