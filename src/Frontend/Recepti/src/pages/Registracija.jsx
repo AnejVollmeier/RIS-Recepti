@@ -1,7 +1,9 @@
+import Registration from "../components/Registration/Registration";
+
 function Registracija() {
   return (
     <div>
-      <h1 className="page-title">Registracija</h1>
+      <Registration />
     </div>
   );
 }

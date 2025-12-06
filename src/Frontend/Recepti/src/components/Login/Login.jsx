@@ -11,20 +11,22 @@ export default function Login() {
     setError("");
 
     try {
-      const response = await fetch("/api/login", {
+      const response = await fetch("http://localhost:8080/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email, geslo: password }),
       });
 
       if (!response.ok) {
-        throw new Error("Prijava ni uspela");
+        const errorText = await response.text();
+        throw new Error(errorText || "Prijava ni uspela");
       }
 
       const data = await response.json();
       localStorage.setItem("token", data.token);
+      localStorage.setItem("uporabnik", JSON.stringify(data));
       window.location.href = "/";
     } catch (err) {
       setError(err.message);
@@ -68,7 +70,7 @@ export default function Login() {
           </button>
         </form>
         <p className={styles.registerLink}>
-          Še nimaš računa? <a href="/register">Registriraj se</a>
+          Še nimaš računa? <a href="/registracija">Registriraj se</a>
         </p>
       </div>
     </div>
