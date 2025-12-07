@@ -26,3 +26,26 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
 }
+
+.user-info {
+  padding: 12px 24px;
+  color: white;
+  font-weight: 600;
+  background-color: hsla(223, 8%, 18%, 0.9);
+  border-radius: 8px;
+  border: 2px solid #ddd;
+}
+
+.logout-button {
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+  background-color: hsla(0, 70%, 50%, 0.9);
+  border-color: #dc3545;
+}
+
+.logout-button:hover {
+  background-color: #dc3545;
+  border-color: #c82333;
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
