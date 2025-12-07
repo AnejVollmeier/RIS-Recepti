@@ -61,7 +61,10 @@ public class Jedilnik {
      * Doda recept v jedilnik.
      */
     public void addRecept(Recepti recept) {
-        if (!this.recepti.contains(recept)) {
+        if (recept == null) return;
+        // Avoid calling contains() which uses equals/hashCode on entities (Lombok @Data can include relations)
+        boolean exists = this.recepti.stream().anyMatch(r -> r.getId() == recept.getId());
+        if (!exists) {
             this.recepti.add(recept);
         }
     }
@@ -77,9 +80,10 @@ public class Jedilnik {
      * Doda alergen v jedilnik.
      */
     public void addAlergen(Alergen alergen) {
-        if (!this.alergeni.contains(alergen)) {
+        if (alergen == null) return;
+        boolean exists = this.alergeni.stream().anyMatch(a -> a.getId().equals(alergen.getId()));
+        if (!exists) {
             this.alergeni.add(alergen);
         }
     }
 }
-

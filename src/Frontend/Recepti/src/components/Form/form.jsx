@@ -30,15 +30,15 @@ function Form() {
       opis,
       sestavine: sestavine.map((s) => ({ naziv: s.ime, kolicina: s.kolicina })),
     };
-    console.log("Pošiljam payload:", payload);
     try {
       const result = await api.post("/api/recepti", payload);
-      console.log("Odgovor:", result.data);
       try {
         window.dispatchEvent(
           new CustomEvent("recept-added", { detail: result.data })
         );
-      } catch (e) {}
+      } catch {
+        // ignore dispatch errors
+      }
       setIme("");
       setOpis("");
       setSestavine([{ ime: "", kolicina: "" }]);

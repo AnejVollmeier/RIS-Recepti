@@ -11,12 +11,13 @@ function List() {
   const [sestavine, setSestavine] = useState([{ ime: "", kolicina: "" }]);
   const [searchName, setSearchName] = useState("");
 
+  const [addSelectors, setAddSelectors] = useState({});
+
   useEffect(() => {
     const pridobiRecepte = async () => {
       try {
         const response = await api.get("/api/recepti");
         setRecepti(response.data);
-        console.log("Pridobljeni recepti:", response.data);
       } catch (error) {
         console.error("Napaka pri pridobivanju receptov:", error);
       }
@@ -31,6 +32,94 @@ function List() {
     return () => window.removeEventListener("recept-added", onAdded);
   }, []);
 
+  const getCurrentUserId = () => {
+    try {
+      const u = JSON.parse(localStorage.getItem("uporabnik"));
+      if (u && (u.id || u.uporabnikId || u.userId)) {
+        return u.id || u.uporabnikId || u.userId;
+      }
+    } catch (err) {
+      // ignore parse errors
+    }
+    return null;
+  };
+
+  // show selector: fetch user's jedilniki and open selector for this recipe
+  const openAddToJedilnikSelector = async (receptId) => {
+    setAddSelectors(s => ({ ...s, [receptId]: { jedilniki: [], selectedJedId: '', loading: true } }));
+    try {
+      const userId = getCurrentUserId();
+      let resp;
+      if (userId) {
+        try {
+          resp = await api.get(`/api/jedilniki/uporabnik/${userId}`);
+        } catch (err) {
+          // fallback: fetch all and filter by owner id client-side
+          const all = await api.get('/api/jedilniki');
+          const filtered = (all.data || []).filter(j => j.uporabnik && Number(j.uporabnik.id) === Number(userId));
+          const jeds = filtered || [];
+          setAddSelectors(s => ({ ...s, [receptId]: { jedilniki: jeds, selectedJedId: jeds.length ? String(jeds[0].id) : '', loading: false } }));
+          return;
+        }
+      } else {
+        resp = await api.get('/api/jedilniki');
+      }
+
+      const jeds = resp.data || [];
+      setAddSelectors(s => ({ ...s, [receptId]: { jedilniki: jeds, selectedJedId: jeds.length ? String(jeds[0].id) : '', loading: false } }));
+    } catch (err) {
+      console.error('Napaka pri pridobivanju jedilnikov:', err);
+      const serverMsg = err?.response?.data || err?.message;
+      alert('Napaka pri nalaganju tvojih jedilnikov: ' + serverMsg);
+      setAddSelectors(s => ({ ...s, [receptId]: { jedilniki: [], selectedJedId: '', loading: false } }));
+    }
+  };
+
+  const cancelAddSelector = (receptId) => setAddSelectors(s => { const ns = { ...s }; delete ns[receptId]; return ns; });
+
+  const confirmAddToJedilnik = async (receptId) => {
+    const sel = addSelectors[receptId];
+    const selectedId = sel?.selectedJedId;
+    const jedId = Number(selectedId);
+    if (!selectedId || Number.isNaN(jedId)) {
+      alert('Najprej izberi jedilnik');
+      return;
+    }
+    try {
+      const jed = (sel?.jedilniki || []).find(j => j.id === jedId);
+      const payload = {
+        receptId: receptId,
+        datum: jed ? jed.datum : null,
+        steviloOseb: jed ? jed.steviloOseb : null,
+        alergenIds: []
+      };
+      const resp = await api.post(`/api/jedilniki/${jedId}/recepti`, payload, { headers: { 'Content-Type': 'application/json' } });
+      if (resp.status === 200 || resp.status === 201) {
+        alert('Recept uspešno dodan v jedilnik');
+        window.dispatchEvent(new CustomEvent('jedilnik-changed', { detail: resp.data }));
+        cancelAddSelector(receptId);
+        return;
+      }
+    } catch (err) {
+      const serverMsg = err?.response?.data || err?.message;
+      alert('Napaka pri dodajanju: ' + JSON.stringify(serverMsg));
+      // fallback
+      try {
+        const fallback = await api.post(`/api/jedilniki/${selectedId}/recepti/${receptId}`);
+        if (fallback.status === 200 || fallback.status === 201) {
+          alert('Recept uspešno dodan v jedilnik');
+          window.dispatchEvent(new CustomEvent('jedilnik-changed', { detail: fallback.data }));
+          cancelAddSelector(receptId);
+          return;
+        }
+      } catch (err2) {
+        alert('Napaka pri dodajanju recepta v jedilnik');
+        cancelAddSelector(receptId);
+        return;
+      }
+    }
+  };
+
   const handleSearch = async () => {
     const idValue = searchId.trim();
     if (!idValue) return;
@@ -44,7 +133,6 @@ function List() {
     try {
       const resp = await api.get(`/api/recepti/${numId}`);
       setRecepti([resp.data]);
-      console.log("Najden recept:", resp.data);
     } catch (err) {
       console.error("Napaka pri iskanju recepta:", err);
       if (err.response?.status === 404) {
@@ -85,7 +173,6 @@ function List() {
     try {
       await api.delete(`/api/recepti/${id}`);
       setRecepti((prev) => prev.filter((recept) => recept.id !== id));
-      console.log(`Recept z ID ${id} je bil izbrisan.`);
     } catch (error) {
       console.error("Napaka pri brisanju recepta:", error);
     }
@@ -137,7 +224,6 @@ function List() {
       setIme("");
       setOpis("");
       setSestavine([{ ime: "", kolicina: "" }]);
-      console.log("Recept posodobljen:", resp.data);
     } catch (error) {
       console.error("Napaka pri posodabljanju recepta:", error);
     }
@@ -188,7 +274,6 @@ function List() {
                 <button
                   type="button"
                   onClick={() => startEdit(recept)}
-                  style={{ color: "#fff" }}
                 >
                   Uredi
                 </button>
@@ -196,10 +281,25 @@ function List() {
                   className={styles.deleteButton}
                   onClick={() => izbrisiRecept(recept.id)}
                   type="button"
-                  style={{ color: "#fff" }}
                 >
                   Izbriši
                 </button>
+                {addSelectors[recept.id] ? (
+                  <div className={styles.jedilnikSelector}>
+                    <select
+                      value={addSelectors[recept.id].selectedJedId || ''}
+                      onChange={(e) => setAddSelectors(s => ({...s, [recept.id]: {...s[recept.id], selectedJedId: e.target.value}}))}
+                    >
+                      {(addSelectors[recept.id].jedilniki || []).map(j => (
+                        <option key={j.id} value={String(j.id)}>{j.naziv} ({j.datum})</option>
+                      ))}
+                    </select>
+                    <button type="button" onClick={() => confirmAddToJedilnik(recept.id)}>Potrdi</button>
+                    <button type="button" className={styles.deleteButton} onClick={() => cancelAddSelector(recept.id)}>Prekliči</button>
+                  </div>
+                ) : (
+                  <button type="button" onClick={() => openAddToJedilnikSelector(recept.id)}>Dodaj v jedilnik</button>
+                )}
               </div>
             </div>
           ))}

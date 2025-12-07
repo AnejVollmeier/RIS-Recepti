@@ -3,12 +3,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px auto;
+  margin-top: 20px;
 }
 .listContainer h1 {
   font-size: 2rem;
   margin-bottom: 20px;
-  font-size: bold;
+  font-weight: bold;
   color: hsl(208, 73%, 54%);
 }
 .onlyListContainer {
@@ -23,13 +23,13 @@
 .onlyListContainer h2 {
   font-size: 1.5rem;
   margin-bottom: 20px;
-  font-size: bold;
+  font-weight: bold;
   color: hsl(208, 73%, 54%);
 }
 .onlyListContainer h3 {
   font-size: 1.2rem;
   margin-bottom: 20px;
-  font-size: bold;
+  font-weight: bold;
   color: hsl(208, 73%, 54%);
 }
 .receptCard {
@@ -44,21 +44,31 @@
   margin-bottom: 20px;
   width: 50%;
 }
+.buttonGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
 .buttonGroup button {
-  height: 30px;
-  width: 100px;
+  height: 35px;
+  padding: 0 15px;
   font-weight: bold;
-  font-size: 1.2rem;
-  margin-right: 10px;
+  font-size: 1rem;
   border-radius: 5px;
   border: none;
   background-color: hsl(194, 99%, 45%);
+  color: #fff;
   cursor: pointer;
 }
+
 .buttonGroup button:hover {
   background-color: hsl(194, 99%, 55%);
   cursor: pointer;
 }
+
 .buttonGroup .deleteButton {
   background-color: hsl(313, 73%, 54%);
 }
@@ -73,12 +83,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px auto;
+  margin-top: 20px;
 }
 .updateContainer h1 {
   font-size: 2rem;
   margin-bottom: 20px;
-  font-size: bold;
+  font-weight: bold;
   color: rgb(30, 117, 193);
 }
 .onlyUpdateContainer {
@@ -177,4 +187,50 @@ button[type="submit"] {
 .searchContainer button:hover {
   background-color: hsl(208, 73%, 64%);
   cursor: pointer;
+}
+
+/* Jedilnik selector styling */
+.jedilnikSelector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.jedilnikSelector select {
+  padding: 8px 12px;
+  border: 1px solid hsl(208, 73%, 54%);
+  background-color: hsla(223, 8%, 18%, 0.9);
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #f8f8f8;
+  height: 35px;
+  min-width: 150px;
+}
+
+.jedilnikSelector button {
+  height: 35px;
+  padding: 0 15px;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: none;
+  background-color: hsl(194, 99%, 45%);
+  color: #fff;
+  cursor: pointer;
+}
+
+.jedilnikSelector button:hover {
+  background-color: hsl(194, 99%, 55%);
+}
+
+.jedilnikSelector .deleteButton {
+  background-color: hsl(313, 73%, 54%);
+}
+
+.jedilnikSelector .deleteButton:hover {
+  background-color: hsl(313, 73%, 64%);
 }
