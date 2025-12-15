@@ -109,6 +109,25 @@ Ciljna publika: domači kuharji, študenti, zaposleni, kuharski navdušenci in a
     mvn spring-boot:run
     ```
 
+    **Unit testi:** Projekt ima obsežne unit teste za glavne entitete:
+    - `UporabnikTest.java` - 10 testov za upravljanje uporabnikov
+    - `ReceptiTest.java` - 10 testov za upravljanje receptov
+    - `JedilnikTest.java` - 13 testov za upravljanje jedilnikov
+    - `OceneTest.java` - 2 testa za upravljanje ocen (Anej Vollmeier)
+
+    Vsi testi vključujejo pozitivne in negativne scenarije. Detaljno poročilo je dostopno v `docs/Testi.md`.
+
+    ```cmd
+    # Pogani samo teste za Uporabnika
+    mvn test -Dtest=UporabnikTest
+    
+    # Pogani samo teste za Recepte
+    mvn test -Dtest=ReceptiTest
+    
+    # Pogani samo teste za Jedilnik
+    mvn test -Dtest=JedilnikTest
+    ```
+
   - Frontend: v mapi `Frontend/Recepti/`:
 
     ```cmd
