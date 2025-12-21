@@ -1,13 +1,14 @@
-package si.um.feri.ris.projekt.Recepti.vao;
+package si.um.feri. ris.projekt.Recepti. vao;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import si.um.feri.ris.projekt.Recepti.service.KolicinaService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java. util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,8 +20,6 @@ public class Recepti {
         this.id = id;
         this.ime = ime;
         this.opis = opis;
-
-        //SAMO TO JE NOVO
         this.steviloPorcij = 1;
     }
 
@@ -31,7 +30,6 @@ public class Recepti {
     private String ime;
     private String opis;
 
-    //SAMO TO JE NOVO
     private int steviloPorcij = 1; // število porcij za recept
 
     private String navodila; // koraki priprave
@@ -62,13 +60,13 @@ public class Recepti {
     private List<Ocena> ocene = new ArrayList<>();
 
     // Všečki recepta
-    @OneToMany(mappedBy = "recept", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "recept", cascade = CascadeType. ALL, orphanRemoval = true)
     @JsonManagedReference("recept-vsecki")
     private List<Vsecek> vsecki = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime. now();
     }
 
     @PreUpdate
@@ -82,7 +80,7 @@ public class Recepti {
     }
 
     public void setSestavine(List<Sestavine> nove) {
-        this.sestavine.clear();
+        this.sestavine. clear();
         if (nove != null) {
             for (Sestavine s : nove) addSestavina(s);
         }
@@ -90,12 +88,12 @@ public class Recepti {
 
     public void addKomentar(Komentar k) {
         k.setRecept(this);
-        this.komentarji.add(k);
+        this.komentarji. add(k);
     }
 
     public void addOcena(Ocena o) {
         o.setRecept(this);
-        this.ocene.add(o);
+        this.ocene. add(o);
     }
 
     public void addVsecek(Vsecek v) {
@@ -123,5 +121,76 @@ public class Recepti {
     @Transient
     public int getSteviloVseckov() {
         return vsecki != null ? vsecki.size() : 0;
+    }
+
+    /**
+     * Izračuna sestavine za določeno število porcij.
+     * @param zelenoPorcije Število porcij, za katere želimo izračunati sestavine
+     * @param kolicinaService Service za pretvorbo količin
+     * @return Seznam sestavin s preračunanimi količinami
+     */
+    @Transient
+    public List<SestavinaDto> getSestavineZaPorcije(int zelenoPorcije, KolicinaService kolicinaService) {
+        if (sestavine == null || sestavine.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<SestavinaDto> rezultat = new ArrayList<>();
+
+        for (Sestavine sestavina : sestavine) {
+            String novaKolicina = kolicinaService.izracunajNovoKolicino(
+                    sestavina.getKolicina(),
+                    this.steviloPorcij,
+                    zelenoPorcije
+            );
+
+            rezultat.add(new SestavinaDto(
+                    sestavina.getNaziv(),
+                    novaKolicina,
+                    sestavina.getKolicina() // originalna količina
+            ));
+        }
+
+        return rezultat;
+    }
+
+    /**
+     * DTO za sestavino s preračunano količino.
+     */
+    public static class SestavinaDto {
+        public String naziv;
+        public String kolicina;
+        public String originalaKolicina;
+
+        public SestavinaDto(String naziv, String kolicina, String originalaKolicina) {
+            this.naziv = naziv;
+            this.kolicina = kolicina;
+            this.originalaKolicina = originalaKolicina;
+        }
+
+        // Getters in Setters za JSON serializacijo
+        public String getNaziv() {
+            return naziv;
+        }
+
+        public void setNaziv(String naziv) {
+            this.naziv = naziv;
+        }
+
+        public String getKolicina() {
+            return kolicina;
+        }
+
+        public void setKolicina(String kolicina) {
+            this.kolicina = kolicina;
+        }
+
+        public String getOriginalaKolicina() {
+            return originalaKolicina;
+        }
+
+        public void setOriginalaKolicina(String originalaKolicina) {
+            this.originalaKolicina = originalaKolicina;
+        }
     }
 }

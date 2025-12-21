@@ -1,13 +1,15 @@
-package si.um.feri. ris.projekt.Recepti. rest;
+package si.um.feri.ris.projekt.Recepti.rest;
 
-import org.springframework. beans.factory.annotation.Autowired;
-import org.springframework. http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import si.um.feri.ris.projekt. Recepti.dao.ReceptiJpaDao;
-import si. um.feri.ris. projekt.Recepti.vao.Recepti;
+import si.um.feri.ris.projekt.Recepti.dao.ReceptiJpaDao;
+import si.um.feri.ris.projekt.Recepti.service.KolicinaService;
+import si.um.feri.ris.projekt.Recepti.vao.Recepti;
 import si.um.feri.ris.projekt.Recepti.vao.Sestavine;
 
-import java.net. URI;
+import java.net.URI;
+import java.util. List;
 import java.util. Optional;
 
 @RestController
@@ -18,9 +20,12 @@ public class ReceptiRestController {
     @Autowired
     ReceptiJpaDao dao;
 
+    @Autowired
+    KolicinaService kolicinaService;
+
     @GetMapping
     public Iterable<Recepti> findAll(@RequestParam(value = "ime", required = false) String ime) {
-        if (ime != null && !ime.isBlank()) {
+        if (ime != null && ! ime.isBlank()) {
             return dao.findByImeContainingIgnoreCase(ime);
         }
         return dao.findAll();
@@ -31,6 +36,40 @@ public class ReceptiRestController {
         return dao.findById(idRecepta)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * NOVO: Vrne recept s preračunanimi sestavinami za določeno število porcij.
+     */
+    @GetMapping("/{idRecepta}/porcije/{steviloPorcij}")
+    public ResponseEntity<? > findByIdZaPorcije(
+            @PathVariable("idRecepta") int idRecepta,
+            @PathVariable("steviloPorcij") int steviloPorcij) {
+
+        if (steviloPorcij <= 0) {
+            return ResponseEntity.badRequest().body("Število porcij mora biti pozitivno");
+        }
+
+        Optional<Recepti> receptOpt = dao.findById(idRecepta);
+        if (receptOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Recepti recept = receptOpt.get();
+        List<Recepti. SestavinaDto> preracunaneSestavine =
+                recept.getSestavineZaPorcije(steviloPorcij, kolicinaService);
+
+        // Ustvari DTO odgovor
+        ReceptZaPorcijoDto response = new ReceptZaPorcijoDto();
+        response.id = recept.getId();
+        response.ime = recept.getIme();
+        response. opis = recept.getOpis();
+        response.navodila = recept.getNavodila();
+        response.originalneSteviloPorcij = recept.getSteviloPorcij();
+        response.zahtevanoSteviloPorcij = steviloPorcij;
+        response.sestavine = preracunaneSestavine;
+
+        return ResponseEntity. ok(response);
     }
 
     @PostMapping
@@ -52,18 +91,56 @@ public class ReceptiRestController {
         r.setOpis(incoming.getOpis());
         r.setNavodila(incoming.getNavodila());
         r.setSlikaUrl(incoming.getSlikaUrl());
-        r.setSteviloPorcij(incoming. getSteviloPorcij()); // DODANO: posodobi število porcij
-        r.setSestavine(incoming.getSestavine());
-        // Avtor recepta se ne more spreminjat, zato ga ne posodabljamo
+        r.setSteviloPorcij(incoming.getSteviloPorcij());
+        r.setSestavine(incoming. getSestavine());
 
         Recepti saved = dao.save(r);
-        return ResponseEntity.ok(saved);
+        return ResponseEntity. ok(saved);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable("id") int id) {
-        if (!dao.existsById(id)) return ResponseEntity.notFound().build();
+        if (! dao.existsById(id)) return ResponseEntity.notFound().build();
         dao.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity. noContent().build();
+    }
+
+    // DTO za odgovor
+    public static class ReceptZaPorcijoDto {
+        public int id;
+        public String ime;
+        public String opis;
+        public String navodila;
+        public int originalneSteviloPorcij;
+        public int zahtevanoSteviloPorcij;
+        public List<Recepti.SestavinaDto> sestavine;
+
+        // Getters in Setters za JSON serializacijo
+        public int getId() { return id; }
+        public void setId(int id) { this.id = id; }
+
+        public String getIme() { return ime; }
+        public void setIme(String ime) { this.ime = ime; }
+
+        public String getOpis() { return opis; }
+        public void setOpis(String opis) { this.opis = opis; }
+
+        public String getNavodila() { return navodila; }
+        public void setNavodila(String navodila) { this.navodila = navodila; }
+
+        public int getOriginalneSteviloPorcij() { return originalneSteviloPorcij; }
+        public void setOriginalneSteviloPorcij(int originalneSteviloPorcij) {
+            this.originalneSteviloPorcij = originalneSteviloPorcij;
+        }
+
+        public int getZahtevanoSteviloPorcij() { return zahtevanoSteviloPorcij; }
+        public void setZahtevanoSteviloPorcij(int zahtevanoSteviloPorcij) {
+            this.zahtevanoSteviloPorcij = zahtevanoSteviloPorcij;
+        }
+
+        public List<Recepti.SestavinaDto> getSestavine() { return sestavine; }
+        public void setSestavine(List<Recepti.SestavinaDto> sestavine) {
+            this.sestavine = sestavine;
+        }
     }
 }
