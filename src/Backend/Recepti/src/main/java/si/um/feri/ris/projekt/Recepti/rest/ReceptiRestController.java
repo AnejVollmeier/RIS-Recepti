@@ -1,14 +1,14 @@
-package si.um.feri.ris.projekt.Recepti.rest;
+package si.um.feri. ris.projekt.Recepti. rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework. beans.factory.annotation.Autowired;
+import org.springframework. http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import si.um.feri.ris.projekt.Recepti.dao.ReceptiJpaDao;
-import si.um.feri.ris.projekt.Recepti.vao.Recepti;
+import si.um.feri.ris.projekt. Recepti.dao.ReceptiJpaDao;
+import si. um.feri.ris. projekt.Recepti.vao.Recepti;
 import si.um.feri.ris.projekt.Recepti.vao.Sestavine;
 
-import java.net.URI;
-import java.util.Optional;
+import java.net. URI;
+import java.util. Optional;
 
 @RestController
 @RequestMapping("/api/recepti")
@@ -39,7 +39,7 @@ public class ReceptiRestController {
             for (Sestavine s : r.getSestavine()) s.setRecept(r);
         }
         Recepti saved = dao.save(r);
-        return ResponseEntity.created(URI.create("/api/recepti/" + saved.getId())).body(saved);
+        return ResponseEntity. created(URI.create("/api/recepti/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")
@@ -52,6 +52,7 @@ public class ReceptiRestController {
         r.setOpis(incoming.getOpis());
         r.setNavodila(incoming.getNavodila());
         r.setSlikaUrl(incoming.getSlikaUrl());
+        r.setSteviloPorcij(incoming. getSteviloPorcij()); // DODANO: posodobi število porcij
         r.setSestavine(incoming.getSestavine());
         // Avtor recepta se ne more spreminjat, zato ga ne posodabljamo
 

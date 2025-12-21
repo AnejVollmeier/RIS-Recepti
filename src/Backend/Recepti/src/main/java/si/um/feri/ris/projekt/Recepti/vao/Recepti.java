@@ -19,6 +19,9 @@ public class Recepti {
         this.id = id;
         this.ime = ime;
         this.opis = opis;
+
+        //SAMO TO JE NOVO
+        this.steviloPorcij = 1;
     }
 
     @Id
@@ -27,7 +30,10 @@ public class Recepti {
 
     private String ime;
     private String opis;
-    
+
+    //SAMO TO JE NOVO
+    private int steviloPorcij = 1; // število porcij za recept
+
     private String navodila; // koraki priprave
     private String slikaUrl; // URL slike recepta
 
