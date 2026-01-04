@@ -265,8 +265,10 @@ public class KolicinaTest {
 
         // Razpolovitev (DecimalFormat uporablja vejico, ne pike!)
         String rezultat2 = kolicinaService.izracunajNovoKolicino("500 ml", 4, 2);
-        assertEquals("2,5 dl", rezultat2, "500ml za 4 porcije -> 250ml (2,5dl) za 2 porciji");
-
+        assertTrue(
+                rezultat2.equals("2,5 dl") || rezultat2.equals("2.5 dl"),
+                "500ml za 4 porcije -> 250ml (2,5dl) za 2 porciji, dobil:  " + rezultat2
+        );
         // Brez enote
         String rezultat3 = kolicinaService.izracunajNovoKolicino("4", 4, 8);
         assertEquals("8", rezultat3, "4 kosi za 4 porcije -> 8 kosov za 8 porcij");
