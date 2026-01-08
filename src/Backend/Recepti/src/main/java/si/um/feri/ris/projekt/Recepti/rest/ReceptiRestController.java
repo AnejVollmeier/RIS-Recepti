@@ -4,13 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import si.um.feri.ris.projekt.Recepti.dao.ReceptiJpaDao;
+import si.um.feri.ris.projekt.Recepti.rest.dto.NutritionData;
 import si.um.feri.ris.projekt.Recepti.service.KolicinaService;
+import si.um.feri.ris.projekt.Recepti.service.NutritionApiService;
 import si.um.feri.ris.projekt.Recepti.vao.Recepti;
 import si.um.feri.ris.projekt.Recepti.vao.Sestavine;
 
 import java.net.URI;
-import java.util. List;
-import java.util. Optional;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/recepti")
@@ -23,9 +25,12 @@ public class ReceptiRestController {
     @Autowired
     KolicinaService kolicinaService;
 
+    @Autowired
+    NutritionApiService nutritionApiService;  // ← DODANO
+
     @GetMapping
     public Iterable<Recepti> findAll(@RequestParam(value = "ime", required = false) String ime) {
-        if (ime != null && ! ime.isBlank()) {
+        if (ime != null && !ime.isBlank()) {
             return dao.findByImeContainingIgnoreCase(ime);
         }
         return dao.findAll();
@@ -38,11 +43,8 @@ public class ReceptiRestController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * NOVO: Vrne recept s preračunanimi sestavinami za določeno število porcij.
-     */
     @GetMapping("/{idRecepta}/porcije/{steviloPorcij}")
-    public ResponseEntity<? > findByIdZaPorcije(
+    public ResponseEntity<?> findByIdZaPorcije(
             @PathVariable("idRecepta") int idRecepta,
             @PathVariable("steviloPorcij") int steviloPorcij) {
 
@@ -56,20 +58,50 @@ public class ReceptiRestController {
         }
 
         Recepti recept = receptOpt.get();
-        List<Recepti. SestavinaDto> preracunaneSestavine =
+        List<Recepti.SestavinaDto> preracunaneSestavine =
                 recept.getSestavineZaPorcije(steviloPorcij, kolicinaService);
 
         // Ustvari DTO odgovor
         ReceptZaPorcijoDto response = new ReceptZaPorcijoDto();
         response.id = recept.getId();
         response.ime = recept.getIme();
-        response. opis = recept.getOpis();
+        response.opis = recept.getOpis();
         response.navodila = recept.getNavodila();
         response.originalneSteviloPorcij = recept.getSteviloPorcij();
         response.zahtevanoSteviloPorcij = steviloPorcij;
         response.sestavine = preracunaneSestavine;
 
-        return ResponseEntity. ok(response);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/test-nutrition")
+    public ResponseEntity<NutritionData> testNutrition(
+            @RequestParam String ime,
+            @RequestParam(required = false) String kolicina) {
+
+        NutritionData data = nutritionApiService.searchByName(ime);
+
+        // Izračunaj vrednosti za podano količino ali 100g če količina ni podana
+        if (data != null && data.isNajdeno()) {
+            String kolicinaZaIzracun = (kolicina != null && !kolicina.trim().isEmpty()) ? kolicina : "100g";
+            data = nutritionApiService.calculateForQuantity(data, kolicinaZaIzracun);
+        }
+
+        return ResponseEntity.ok(data);
+    }
+
+    @GetMapping("/test-nutrition-quantity")
+    public ResponseEntity<NutritionData> testNutritionWithQuantity(
+            @RequestParam String ime,
+            @RequestParam String kolicina) {
+
+        // Najprej poišči osnovne podatke
+        NutritionData data = nutritionApiService.searchByName(ime);
+
+        // Potem izračunaj za količino
+        NutritionData calculated = nutritionApiService.calculateForQuantity(data, kolicina);
+
+        return ResponseEntity.ok(calculated);
     }
 
     @PostMapping
