@@ -9,6 +9,8 @@ import si.um.feri.ris.projekt.Recepti.service.KolicinaService;
 import si.um.feri.ris.projekt.Recepti.service.NutritionApiService;
 import si.um.feri.ris.projekt.Recepti.vao.Recepti;
 import si.um.feri.ris.projekt.Recepti.vao.Sestavine;
+import si.um.feri.ris.projekt. Recepti.rest.dto. HranilneVrednostiDto;
+import si.um.feri. ris.projekt.Recepti. service.HranilneVrednostiService;
 
 import java.net.URI;
 import java.util.List;
@@ -24,6 +26,9 @@ public class ReceptiRestController {
 
     @Autowired
     KolicinaService kolicinaService;
+
+    @Autowired
+    private HranilneVrednostiService hranilneVrednostiService;
 
     @Autowired
     NutritionApiService nutritionApiService;  // ← DODANO
@@ -174,5 +179,26 @@ public class ReceptiRestController {
         public void setSestavine(List<Recepti.SestavinaDto> sestavine) {
             this.sestavine = sestavine;
         }
+    }
+
+    /**
+     * Vrne hranilne vrednosti za recept
+     */
+    @GetMapping("/{id}/hranilne-vrednosti")
+    public ResponseEntity<HranilneVrednostiDto> getHranilneVrednosti(
+            @PathVariable("id") int id,
+            @RequestParam(name = "porcije", defaultValue = "1") int porcije) {
+
+        if (porcije < 1) {
+            porcije = 1;
+        }
+
+        HranilneVrednostiDto vrednosti = hranilneVrednostiService. izracunajHranilneVrednosti(id, porcije);
+
+        if (vrednosti == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(vrednosti);
     }
 }

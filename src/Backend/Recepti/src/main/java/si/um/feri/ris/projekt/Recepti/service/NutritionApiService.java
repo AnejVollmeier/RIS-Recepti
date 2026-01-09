@@ -14,7 +14,7 @@ public class NutritionApiService {
 
     private static final Logger log = Logger.getLogger(NutritionApiService.class.getName());
 
-    @Value("${nutrition.api.base-url}")
+    @Value("${nutrition.api.base-url:https://world.openfoodfacts.org}")
     private String apiBaseUrl;
 
     private final RestTemplate restTemplate;
