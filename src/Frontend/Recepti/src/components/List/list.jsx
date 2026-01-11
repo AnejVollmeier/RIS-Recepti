@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import api from "../../server/server";
 import styles from "./list.module.css";
+import NutritionalInfo from "../../components/NutritionalInfo/NutritionalInfo";
 
 function List() {
     const [recepti, setRecepti] = useState([]);
@@ -13,7 +14,7 @@ function List() {
 
     const [addSelectors, setAddSelectors] = useState({});
     const [porcijePoReceptu, setPorcijePoReceptu] = useState({});
-
+    const [showNutrition, setShowNutrition] = useState({});
 
     const [preracunaniRecepti, setPreracunaniRecepti] = useState({});
     const [loadingPorcije, setLoadingPorcije] = useState({});
@@ -247,7 +248,7 @@ function List() {
         );
     };
 
-    // NOVO:  Funkcija za preračun preko backend API
+    // Funkcija za preračun preko backend API
     const handlePorcijeChange = async (receptId, value) => {
         const num = parseInt(value);
         if (isNaN(num) || num < 1 || num > 20) return;
@@ -341,6 +342,13 @@ function List() {
         } catch (error) {
             console.error("Napaka pri posodabljanju recepta:", error);
         }
+    };
+
+    const toggleNutrition = (receptId) => {
+        setShowNutrition((prev) => ({
+            ...prev,
+            [receptId]: ! prev[receptId],
+        }));
     };
 
     return (
@@ -465,6 +473,12 @@ function List() {
                                         </li>
                                     ))}
                                 </ul>
+                                <NutritionalInfo
+                                    receptId={recept.id}
+                                    defaultPorcije={trenutnePorcije}
+                                    compact={true}
+                                />
+
                                 <div className={styles.buttonGroup}>
                                     <button type="button" onClick={() => startEdit(recept)}>
                                         Uredi
@@ -476,6 +490,13 @@ function List() {
                                     >
                                         Izbriši
                                     </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleNutrition(recept. id)}
+                                    >
+                                        {showNutrition[recept.id] ?  "Skrij" : "Prikaži"} hranilne vrednosti
+                                    </button>
+
                                     {addSelectors[recept.id] ?  (
                                         <div className={styles.jedilnikSelector}>
                                             <select
