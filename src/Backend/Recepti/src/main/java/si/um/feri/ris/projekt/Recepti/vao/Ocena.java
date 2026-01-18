@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"uporabnik_id", "recept_id"})
+        @UniqueConstraint(columnNames = { "uporabnik_id", "recept_id" })
 })
 public class Ocena {
 
@@ -30,7 +30,7 @@ public class Ocena {
 
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "uporabnik_id", nullable = false)
     private Uporabnik uporabnik;
 
@@ -62,4 +62,3 @@ public class Ocena {
         this.updatedAt = LocalDateTime.now();
     }
 }
-

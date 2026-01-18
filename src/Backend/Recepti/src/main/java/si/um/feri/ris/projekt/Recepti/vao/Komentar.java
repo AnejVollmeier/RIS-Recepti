@@ -27,7 +27,7 @@ public class Komentar {
 
     private LocalDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "uporabnik_id", nullable = false)
     private Uporabnik uporabnik;
 
@@ -56,4 +56,3 @@ public class Komentar {
         this.updatedAt = LocalDateTime.now();
     }
 }
-

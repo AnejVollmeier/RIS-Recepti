@@ -16,6 +16,10 @@ function List() {
     const [porcijePoReceptu, setPorcijePoReceptu] = useState({});
     const [showNutrition, setShowNutrition] = useState({});
 
+    const [comments, setComments] = useState({});
+    const [showComments, setShowComments] = useState({});
+    const [newComment, setNewComment] = useState({});
+
     const [preracunaniRecepti, setPreracunaniRecepti] = useState({});
     const [loadingPorcije, setLoadingPorcije] = useState({});
 
@@ -351,6 +355,53 @@ function List() {
         }));
     };
 
+    const toggleComments = async (receptId) => {
+        if (showComments[receptId]) {
+            setShowComments((prev) => ({ ...prev, [receptId]: false }));
+        } else {
+            try {
+                const resp = await api.get(`/api/komentarji/recept/${receptId}`);
+                setComments((prev) => ({ ...prev, [receptId]: resp.data }));
+                setShowComments((prev) => ({ ...prev, [receptId]: true }));
+            } catch (err) {
+                console.error("Napaka pri nalaganju komentarjev:", err);
+                alert("Napaka pri nalaganju komentarjev.");
+            }
+        }
+    };
+
+    const handleCommentChange = (receptId, val) => {
+        setNewComment((prev) => ({ ...prev, [receptId]: val }));
+    };
+
+    const submitComment = async (receptId) => {
+        const userId = getCurrentUserId();
+        if (!userId) {
+            alert("Za oddajo komentarja se prosim prijavite.");
+            return;
+        }
+        const text = newComment[receptId];
+        if (!text || !text.trim()) return;
+
+        try {
+            const payload = {
+                besedilo: text,
+                receptId: parseInt(receptId),
+                uporabnikId: parseInt(userId),
+            };
+            const resp = await api.post("/api/komentarji", payload);
+            // Prepend new comment
+            setComments((prev) => ({
+                ...prev,
+                [receptId]: [resp.data, ...(prev[receptId] || [])],
+            }));
+            setNewComment((prev) => ({ ...prev, [receptId]: "" }));
+        } catch (err) {
+            console.error("Napaka pri oddaji komentarja:", err);
+            alert("Napaka pri oddaji komentarja.");
+        }
+    };
+
     return (
         <>
             <div className={styles. listContainer}>
@@ -497,6 +548,13 @@ function List() {
                                         {showNutrition[recept.id] ?  "Skrij" : "Prikaži"} hranilne vrednosti
                                     </button>
 
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleComments(recept.id)}
+                                    >
+                                        {showComments[recept.id] ? "Skrij" : "Prikaži"} komentarje
+                                    </button>
+
                                     {addSelectors[recept.id] ?  (
                                         <div className={styles.jedilnikSelector}>
                                             <select
@@ -540,6 +598,51 @@ function List() {
                                         </button>
                                     )}
                                 </div>
+                                {showComments[recept.id] && (
+                                    <div className={styles.commentsSection} style={{ marginTop: "15px", borderTop: "1px solid #ccc", paddingTop: "10px" }}>
+                                        <h4>Komentarji</h4>
+                                        {comments[recept.id] && comments[recept.id].length > 0 ? (
+                                            <ul style={{ listStyle: "none", padding: 0 }}>
+                                                {comments[recept.id].map((kom) => (
+                                                    <li key={kom.id} style={{ marginBottom: "10px", padding: "8px", backgroundColor: "#f9f9f9", borderRadius: "5px", color: "black" }}>
+                                                        <div style={{ fontWeight: "bold", fontSize: "0.9em" }}>
+                                                            {kom.uporabnik ? kom.uporabnik.uporabniskoIme : "Neznan uporabnik"}
+                                                            <span style={{ fontWeight: "normal", color: "#888", marginLeft: "10px", fontSize: "0.8em" }}>
+                                                                {kom.createdAt ? new Date(kom.createdAt).toLocaleDateString() : ""}
+                                                            </span>
+                                                        </div>
+                                                        <div style={{ marginTop: "5px" }}>{kom.besedilo}</div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p style={{ fontStyle: "italic", color: "#666" }}>Ni komentarjev.</p>
+                                        )}
+                                        
+                                        {getCurrentUserId() ? (
+                                            <div style={{ marginTop: "10px" }}>
+                                                <textarea
+                                                    style={{ width: "100%", padding: "8px", borderRadius: "4px", border: "1px solid #ccc" }}
+                                                    rows="3"
+                                                    placeholder="Dodaj komentar..."
+                                                    value={newComment[recept.id] || ""}
+                                                    onChange={(e) => handleCommentChange(recept.id, e.target.value)}
+                                                ></textarea>
+                                                <button
+                                                    type="button"
+                                                    style={{ marginTop: "5px", padding: "5px 15px", backgroundColor: "#28a745", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+                                                    onClick={() => submitComment(recept.id)}
+                                                >
+                                                    Pošlji komentar
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div style={{ marginTop: "10px", color: "#666", fontSize: "0.9em" }}>
+                                                Za komentiranje se morate prijaviti.
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         );
                     })}

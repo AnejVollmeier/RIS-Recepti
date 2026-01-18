@@ -1,5 +1,6 @@
-package si.um.feri. ris.projekt.Recepti. vao;
+package si.um.feri.ris.projekt.Recepti.vao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 import si.um.feri.ris.projekt.Recepti.service.KolicinaService;
 
 import java.time.LocalDateTime;
-import java. util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -39,9 +40,9 @@ public class Recepti {
     private LocalDateTime updatedAt;
 
     // Avtor recepta
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "avtor_id")
-    @JsonIgnoreProperties({"recepti", "komentarji", "ocene", "vsecki", "geslo"})
+    @JsonIgnoreProperties({ "recepti", "komentarji", "ocene", "vsecki", "geslo" })
     private Uporabnik avtor;
 
     @OneToMany(mappedBy = "recept", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -51,7 +52,7 @@ public class Recepti {
 
     // Komentarji na receptu
     @OneToMany(mappedBy = "recept", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference("recept-komentarji")
+    @JsonIgnore
     private List<Komentar> komentarji = new ArrayList<>();
 
     // Ocene recepta
@@ -60,13 +61,13 @@ public class Recepti {
     private List<Ocena> ocene = new ArrayList<>();
 
     // Všečki recepta
-    @OneToMany(mappedBy = "recept", cascade = CascadeType. ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "recept", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("recept-vsecki")
     private List<Vsecek> vsecki = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime. now();
+        this.createdAt = LocalDateTime.now();
     }
 
     @PreUpdate
@@ -80,20 +81,21 @@ public class Recepti {
     }
 
     public void setSestavine(List<Sestavine> nove) {
-        this.sestavine. clear();
+        this.sestavine.clear();
         if (nove != null) {
-            for (Sestavine s : nove) addSestavina(s);
+            for (Sestavine s : nove)
+                addSestavina(s);
         }
     }
 
     public void addKomentar(Komentar k) {
         k.setRecept(this);
-        this.komentarji. add(k);
+        this.komentarji.add(k);
     }
 
     public void addOcena(Ocena o) {
         o.setRecept(this);
-        this.ocene. add(o);
+        this.ocene.add(o);
     }
 
     public void addVsecek(Vsecek v) {
@@ -125,7 +127,8 @@ public class Recepti {
 
     /**
      * Izračuna sestavine za določeno število porcij.
-     * @param zelenoPorcije Število porcij, za katere želimo izračunati sestavine
+     * 
+     * @param zelenoPorcije   Število porcij, za katere želimo izračunati sestavine
      * @param kolicinaService Service za pretvorbo količin
      * @return Seznam sestavin s preračunanimi količinami
      */
@@ -141,8 +144,7 @@ public class Recepti {
             String novaKolicina = kolicinaService.izracunajNovoKolicino(
                     sestavina.getKolicina(),
                     this.steviloPorcij,
-                    zelenoPorcije
-            );
+                    zelenoPorcije);
 
             rezultat.add(new SestavinaDto(
                     sestavina.getNaziv(),

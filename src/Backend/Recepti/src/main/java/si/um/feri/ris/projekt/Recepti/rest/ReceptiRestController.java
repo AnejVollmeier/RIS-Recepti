@@ -9,8 +9,8 @@ import si.um.feri.ris.projekt.Recepti.service.KolicinaService;
 import si.um.feri.ris.projekt.Recepti.service.NutritionApiService;
 import si.um.feri.ris.projekt.Recepti.vao.Recepti;
 import si.um.feri.ris.projekt.Recepti.vao.Sestavine;
-import si.um.feri.ris.projekt. Recepti.rest.dto. HranilneVrednostiDto;
-import si.um.feri. ris.projekt.Recepti. service.HranilneVrednostiService;
+import si.um.feri.ris.projekt.Recepti.rest.dto.HranilneVrednostiDto;
+import si.um.feri.ris.projekt.Recepti.service.HranilneVrednostiService;
 
 import java.net.URI;
 import java.util.List;
@@ -31,14 +31,19 @@ public class ReceptiRestController {
     private HranilneVrednostiService hranilneVrednostiService;
 
     @Autowired
-    NutritionApiService nutritionApiService;  // ← DODANO
+    NutritionApiService nutritionApiService; // ← DODANO
 
     @GetMapping
-    public Iterable<Recepti> findAll(@RequestParam(value = "ime", required = false) String ime) {
-        if (ime != null && !ime.isBlank()) {
-            return dao.findByImeContainingIgnoreCase(ime);
+    public ResponseEntity<?> findAll(@RequestParam(value = "ime", required = false) String ime) {
+        try {
+            if (ime != null && !ime.isBlank()) {
+                return ResponseEntity.ok(dao.findByImeContainingIgnoreCase(ime));
+            }
+            return ResponseEntity.ok(dao.findAll());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Napaka pri pridobivanju receptov: " + e.toString());
         }
-        return dao.findAll();
     }
 
     @GetMapping("/{idRecepta}")
@@ -63,8 +68,7 @@ public class ReceptiRestController {
         }
 
         Recepti recept = receptOpt.get();
-        List<Recepti.SestavinaDto> preracunaneSestavine =
-                recept.getSestavineZaPorcije(steviloPorcij, kolicinaService);
+        List<Recepti.SestavinaDto> preracunaneSestavine = recept.getSestavineZaPorcije(steviloPorcij, kolicinaService);
 
         // Ustvari DTO odgovor
         ReceptZaPorcijoDto response = new ReceptZaPorcijoDto();
@@ -112,16 +116,18 @@ public class ReceptiRestController {
     @PostMapping
     public ResponseEntity<Recepti> addNew(@RequestBody Recepti r) {
         if (r.getSestavine() != null) {
-            for (Sestavine s : r.getSestavine()) s.setRecept(r);
+            for (Sestavine s : r.getSestavine())
+                s.setRecept(r);
         }
         Recepti saved = dao.save(r);
-        return ResponseEntity. created(URI.create("/api/recepti/" + saved.getId())).body(saved);
+        return ResponseEntity.created(URI.create("/api/recepti/" + saved.getId())).body(saved);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Recepti> updateById(@PathVariable("id") int id, @RequestBody Recepti incoming) {
         Optional<Recepti> existing = dao.findById(id);
-        if (existing.isEmpty()) return ResponseEntity.notFound().build();
+        if (existing.isEmpty())
+            return ResponseEntity.notFound().build();
 
         Recepti r = existing.get();
         r.setIme(incoming.getIme());
@@ -129,17 +135,18 @@ public class ReceptiRestController {
         r.setNavodila(incoming.getNavodila());
         r.setSlikaUrl(incoming.getSlikaUrl());
         r.setSteviloPorcij(incoming.getSteviloPorcij());
-        r.setSestavine(incoming. getSestavine());
+        r.setSestavine(incoming.getSestavine());
 
         Recepti saved = dao.save(r);
-        return ResponseEntity. ok(saved);
+        return ResponseEntity.ok(saved);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable("id") int id) {
-        if (! dao.existsById(id)) return ResponseEntity.notFound().build();
+        if (!dao.existsById(id))
+            return ResponseEntity.notFound().build();
         dao.deleteById(id);
-        return ResponseEntity. noContent().build();
+        return ResponseEntity.noContent().build();
     }
 
     // DTO za odgovor
@@ -153,29 +160,58 @@ public class ReceptiRestController {
         public List<Recepti.SestavinaDto> sestavine;
 
         // Getters in Setters za JSON serializacijo
-        public int getId() { return id; }
-        public void setId(int id) { this.id = id; }
+        public int getId() {
+            return id;
+        }
 
-        public String getIme() { return ime; }
-        public void setIme(String ime) { this.ime = ime; }
+        public void setId(int id) {
+            this.id = id;
+        }
 
-        public String getOpis() { return opis; }
-        public void setOpis(String opis) { this.opis = opis; }
+        public String getIme() {
+            return ime;
+        }
 
-        public String getNavodila() { return navodila; }
-        public void setNavodila(String navodila) { this.navodila = navodila; }
+        public void setIme(String ime) {
+            this.ime = ime;
+        }
 
-        public int getOriginalneSteviloPorcij() { return originalneSteviloPorcij; }
+        public String getOpis() {
+            return opis;
+        }
+
+        public void setOpis(String opis) {
+            this.opis = opis;
+        }
+
+        public String getNavodila() {
+            return navodila;
+        }
+
+        public void setNavodila(String navodila) {
+            this.navodila = navodila;
+        }
+
+        public int getOriginalneSteviloPorcij() {
+            return originalneSteviloPorcij;
+        }
+
         public void setOriginalneSteviloPorcij(int originalneSteviloPorcij) {
             this.originalneSteviloPorcij = originalneSteviloPorcij;
         }
 
-        public int getZahtevanoSteviloPorcij() { return zahtevanoSteviloPorcij; }
+        public int getZahtevanoSteviloPorcij() {
+            return zahtevanoSteviloPorcij;
+        }
+
         public void setZahtevanoSteviloPorcij(int zahtevanoSteviloPorcij) {
             this.zahtevanoSteviloPorcij = zahtevanoSteviloPorcij;
         }
 
-        public List<Recepti.SestavinaDto> getSestavine() { return sestavine; }
+        public List<Recepti.SestavinaDto> getSestavine() {
+            return sestavine;
+        }
+
         public void setSestavine(List<Recepti.SestavinaDto> sestavine) {
             this.sestavine = sestavine;
         }
@@ -193,7 +229,7 @@ public class ReceptiRestController {
             porcije = 1;
         }
 
-        HranilneVrednostiDto vrednosti = hranilneVrednostiService. izracunajHranilneVrednosti(id, porcije);
+        HranilneVrednostiDto vrednosti = hranilneVrednostiService.izracunajHranilneVrednosti(id, porcije);
 
         if (vrednosti == null) {
             return ResponseEntity.notFound().build();
