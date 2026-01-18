@@ -57,12 +57,12 @@ public class Recepti {
 
     // Ocene recepta
     @OneToMany(mappedBy = "recept", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference("recept-ocene")
+    @JsonIgnore
     private List<Ocena> ocene = new ArrayList<>();
 
     // Všečki recepta
     @OneToMany(mappedBy = "recept", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference("recept-vsecki")
+    @JsonIgnore
     private List<Vsecek> vsecki = new ArrayList<>();
 
     @PrePersist
