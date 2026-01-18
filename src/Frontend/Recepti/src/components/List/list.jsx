@@ -19,6 +19,10 @@ function List() {
     const [comments, setComments] = useState({});
     const [showComments, setShowComments] = useState({});
     const [newComment, setNewComment] = useState({});
+    
+    // State for editing comments
+    const [editingCommentId, setEditingCommentId] = useState(null);
+    const [editCommentText, setEditCommentText] = useState("");
 
     const [preracunaniRecepti, setPreracunaniRecepti] = useState({});
     const [loadingPorcije, setLoadingPorcije] = useState({});
@@ -402,6 +406,55 @@ function List() {
         }
     };
 
+    const startEditComment = (comment) => {
+        setEditingCommentId(comment.id);
+        setEditCommentText(comment.besedilo);
+    };
+
+    const cancelEditComment = () => {
+        setEditingCommentId(null);
+        setEditCommentText("");
+    };
+
+    const saveEditComment = async (commentId, receptId) => {
+        if (!editCommentText.trim()) return;
+        try {
+            const payload = {
+                besedilo: editCommentText
+            };
+            const resp = await api.put(`/api/komentarji/${commentId}`, payload);
+            
+            setComments((prev) => {
+                const specificComments = prev[receptId] || [];
+                return {
+                    ...prev,
+                    [receptId]: specificComments.map(c => c.id === commentId ? resp.data : c)
+                };
+            });
+            cancelEditComment();
+        } catch (err) {
+            console.error("Napaka pri urejanju komentarja:", err);
+            alert("Napaka pri urejanju komentarja.");
+        }
+    };
+
+    const deleteComment = async (commentId, receptId) => {
+        if (!window.confirm("Res želite izbrisati ta komentar?")) return;
+        try {
+            await api.delete(`/api/komentarji/${commentId}`);
+            setComments((prev) => {
+                const specificComments = prev[receptId] || [];
+                return {
+                    ...prev,
+                    [receptId]: specificComments.filter(c => c.id !== commentId)
+                };
+            });
+        } catch (err) {
+             console.error("Napaka pri brisanju komentarja:", err);
+             alert("Napaka pri brisanju komentarja.");
+        }
+    };
+
     return (
         <>
             <div className={styles. listContainer}>
@@ -603,17 +656,43 @@ function List() {
                                         <h4>Komentarji</h4>
                                         {comments[recept.id] && comments[recept.id].length > 0 ? (
                                             <ul style={{ listStyle: "none", padding: 0 }}>
-                                                {comments[recept.id].map((kom) => (
+                                                {comments[recept.id].map((kom) => {
+                                                    const isOwner = getCurrentUserId() && kom.uporabnik && String(kom.uporabnik.id) === String(getCurrentUserId());
+                                                    const isEditing = editingCommentId === kom.id;
+                                                    
+                                                    return (
                                                     <li key={kom.id} style={{ marginBottom: "10px", padding: "8px", backgroundColor: "#f9f9f9", borderRadius: "5px", color: "black" }}>
-                                                        <div style={{ fontWeight: "bold", fontSize: "0.9em" }}>
-                                                            {kom.uporabnik ? kom.uporabnik.uporabniskoIme : "Neznan uporabnik"}
-                                                            <span style={{ fontWeight: "normal", color: "#888", marginLeft: "10px", fontSize: "0.8em" }}>
-                                                                {kom.createdAt ? new Date(kom.createdAt).toLocaleDateString() : ""}
+                                                        <div style={{ fontWeight: "bold", fontSize: "0.9em", display: "flex", justifyContent: "space-between" }}>
+                                                            <span>
+                                                                {kom.uporabnik ? kom.uporabnik.uporabniskoIme : "Neznan uporabnik"}
+                                                                <span style={{ fontWeight: "normal", color: "#888", marginLeft: "10px", fontSize: "0.8em" }}>
+                                                                    {kom.createdAt ? new Date(kom.createdAt).toLocaleDateString() : ""}
+                                                                </span>
                                                             </span>
+                                                            {isOwner && !isEditing && (
+                                                                <div>
+                                                                    <button type="button" onClick={() => startEditComment(kom)} style={{ marginRight: "5px", fontSize: "0.8em", cursor:"pointer" }}>Uredi</button>
+                                                                    <button type="button" onClick={() => deleteComment(kom.id, recept.id)} style={{ fontSize: "0.8em", color: "red", cursor:"pointer" }}>Izbriši</button>
+                                                                </div>
+                                                            )}
                                                         </div>
-                                                        <div style={{ marginTop: "5px" }}>{kom.besedilo}</div>
+                                                        {isEditing ? (
+                                                            <div style={{ marginTop: "5px" }}>
+                                                                <textarea 
+                                                                    value={editCommentText}
+                                                                    onChange={(e) => setEditCommentText(e.target.value)}
+                                                                    style={{ width: "100%", padding: "5px" }}
+                                                                />
+                                                                <div style={{ marginTop: "5px" }}>
+                                                                    <button type="button" onClick={() => saveEditComment(kom.id, recept.id)} style={{ marginRight: "5px", cursor:"pointer", backgroundColor: "#28a745", color: "white", border: "none", padding: "3px 8px", borderRadius: "3px" }}>Shrani</button>
+                                                                    <button type="button" onClick={cancelEditComment} style={{ cursor:"pointer", backgroundColor: "#dc3545", color: "white", border: "none", padding: "3px 8px", borderRadius: "3px" }}>Prekliči</button>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div style={{ marginTop: "5px" }}>{kom.besedilo}</div>
+                                                        )}
                                                     </li>
-                                                ))}
+                                                )})}
                                             </ul>
                                         ) : (
                                             <p style={{ fontStyle: "italic", color: "#666" }}>Ni komentarjev.</p>
