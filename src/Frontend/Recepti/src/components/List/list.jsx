@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import api from "../../server/server";
 import styles from "./list.module.css";
 import NutritionalInfo from "../../components/NutritionalInfo/NutritionalInfo";
@@ -6,9 +7,11 @@ import NutritionalInfo from "../../components/NutritionalInfo/NutritionalInfo";
 function List() {
   const [recepti, setRecepti] = useState([]);
   const [searchId, setSearchId] = useState("");
+  const location = useLocation();
   const [editingId, setEditingId] = useState(null);
   const [ime, setIme] = useState("");
   const [opis, setOpis] = useState("");
+  const [navodila, setNavodila] = useState("");
   const [sestavine, setSestavine] = useState([{ ime: "", kolicina: "" }]);
   const [searchName, setSearchName] = useState("");
 
@@ -26,6 +29,21 @@ function List() {
 
   const [preracunaniRecepti, setPreracunaniRecepti] = useState({});
   const [loadingPorcije, setLoadingPorcije] = useState({});
+
+  useEffect(() => {
+    if (recepti.length > 0 && location.hash) {
+      const element = document.getElementById(location.hash.substring(1));
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.classList.add(styles.highlighted);
+          setTimeout(() => {
+            element.classList.remove(styles.highlighted);
+          }, 3000);
+        }, 100);
+      }
+    }
+  }, [recepti, location.hash]);
 
   useEffect(() => {
     const pridobiRecepte = async () => {
@@ -231,6 +249,7 @@ function List() {
     setEditingId(recept.id);
     setIme(recept.ime || "");
     setOpis(recept.opis || "");
+    setNavodila(recept.navodila || "");
     const localSest = (recept.sestavine || []).map((s) => ({
       ime: s.naziv || "",
       kolicina: s.kolicina || "",
@@ -257,6 +276,13 @@ function List() {
   };
 
   // Funkcija za preračun preko backend API
+  const getPorcijeLabel = (n) => {
+    if (n === 1) return "porcijo";
+    if (n === 2) return "porciji";
+    if (n === 3 || n === 4) return "porcije";
+    return "porcij";
+  };
+
   const handlePorcijeChange = async (receptId, value) => {
     const num = parseInt(value);
     if (isNaN(num) || num < 1 || num > 20) return;
@@ -336,6 +362,7 @@ function List() {
     const payload = {
       ime,
       opis,
+      navodila,
       sestavine: sestavine.map((s) => ({ naziv: s.ime, kolicina: s.kolicina })),
     };
     try {
@@ -346,6 +373,7 @@ function List() {
       setEditingId(null);
       setIme("");
       setOpis("");
+      setNavodila("");
       setSestavine([{ ime: "", kolicina: "" }]);
     } catch (error) {
       console.error("Napaka pri posodabljanju recepta:", error);
@@ -494,463 +522,195 @@ function List() {
   };
 
   return (
-    <>
-      <div className={styles.listContainer}>
-        <h1>Poišči specifičen recept</h1>
-        <div className={styles.searchContainer}>
-          <input
-            type="number"
-            value={searchId}
-            onChange={(e) => setSearchId(e.target.value)}
-            placeholder="Vnesi ID recepta"
-          />
-          <button type="button" onClick={handleSearch}>
-            Išči
-          </button>
-          <input
-            type="text"
-            value={searchName}
-            onChange={(e) => setSearchName(e.target.value)}
-            placeholder="Vnesi ime recepta"
-          />
-          <button type="button" onClick={handleSearchByName}>
-            Išči
-          </button>
+    <div className={styles.container}>
+      <div className={styles.searchBar}>
+        <input
+          type="text"
+          placeholder="Išči po imenu recepta..."
+          className={styles.searchInput}
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+        />
+        <button type="button" className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleShowAll}>
+          Prikaži vse
+        </button>
+      </div>
 
-          <button type="button" onClick={handleShowAll}>
-            Prikaži vse
-          </button>
-        </div>
-        <div className={styles.onlyListContainer}>
-          {recepti.map((recept) => {
+      <div className={styles.recipeGrid}>
+        {recepti
+          .filter((r) =>
+            r.ime.toLowerCase().includes(searchName.toLowerCase())
+          )
+          .map((recept) => {
             const originalnePorcije = recept.steviloPorcij || 1;
-            const trenutnePorcije =
-              porcijePoReceptu[recept.id] || originalnePorcije;
-            const sestavineZaPrikaz = getSestavineZaPrikaz(
-              recept,
-              trenutnePorcije,
-            );
+            const trenutnePorcije = porcijePoReceptu[recept.id] || originalnePorcije;
+            const sestavineZaPrikaz = getSestavineZaPrikaz(recept, trenutnePorcije);
             const jeLoading = loadingPorcije[recept.id];
 
             return (
-              <div key={recept.id} className={styles.receptCard}>
-                <h2>{recept.ime}</h2>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginBottom: "10px",
-                    gap: "10px",
-                  }}
-                >
-                  <div
-                    title={`Povprečna ocena: ${recept.povprecnaOcena ? recept.povprecnaOcena.toFixed(1) : "0.0"}`}
-                  >
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <span
-                        key={star}
-                        style={{
-                          color:
-                            star <= Math.round(recept.povprecnaOcena || 0)
-                              ? "#FFD700"
-                              : "#ddd",
-                          fontSize: "1.2rem",
-                        }}
-                      >
-                        ★
+              <div key={recept.id} id={`recept-${recept.id}`} className={styles.recipeCard}>
+                <div className={styles.cardHeader}>
+                  <h2 className={styles.recipeTitle}>{recept.ime}</h2>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div className={styles.ratingDisplay}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span key={star} style={{ color: star <= Math.round(recept.povprecnaOcena || 0) ? "#FFD700" : "#374151", fontSize: "1.1rem" }}>★</span>
+                      ))}
+                      <span style={{ marginLeft: "6px", color: "#94a3b8", fontSize: "0.85rem" }}>
+                        {(recept.povprecnaOcena || 0).toFixed(1)}
                       </span>
-                    ))}
-                    <span
-                      style={{
-                        marginLeft: "5px",
-                        color: "#666",
-                        fontSize: "0.9rem",
-                      }}
-                    >
-                      {(recept.povprecnaOcena || 0).toFixed(1)}
-                    </span>
+                    </div>
+                    <span className={styles.recipeId}>#{recept.id}</span>
                   </div>
+                </div>
+                
+                <p className={styles.description}>{recept.opis}</p>
+
+                <div className={styles.section}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "15px" }}>
+                    <h3>Sestavine (za {trenutnePorcije} {getPorcijeLabel(trenutnePorcije)})</h3>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                       <input 
+                         type="range" 
+                         min="1" max="20" 
+                         value={trenutnePorcije} 
+                         onChange={(e) => handlePorcijeChange(recept.id, e.target.value)}
+                         style={{ width: "100px", accentColor: "hsl(208, 73%, 54%)" }}
+                       />
+                       <span style={{ color: "#fff", fontWeight: "600", width: "20px" }}>{trenutnePorcije}</span>
+                    </div>
+                  </div>
+                  <ul className={styles.ingredientList}>
+                    {sestavineZaPrikaz.map((s, i) => (
+                      <li key={i} className={styles.ingredientItem}>
+                        <span className={styles.ingredientName}>{s.naziv}</span>
+                        <span className={styles.ingredientQty}>{s.kolicina}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {jeLoading && <p style={{ fontSize: "0.8rem", color: "hsl(208, 73%, 54%)", marginTop: "10px" }}>⏳ Preračunavam...</p>}
+                </div>
+
+                {recept.navodila && (
+                  <div className={styles.section}>
+                    <h3 style={{ marginBottom: "10px" }}>Postopek priprave</h3>
+                    <p style={{ 
+                      whiteSpace: "pre-line", 
+                      fontSize: "0.95rem", 
+                      lineHeight: "1.6", 
+                      color: "var(--text-secondary)",
+                      backgroundColor: "rgba(255,255,255,0.03)",
+                      padding: "15px",
+                      borderRadius: "8px",
+                      border: "1px solid var(--border-color)"
+                    }}>
+                      {recept.navodila}
+                    </p>
+                  </div>
+                )}
+
+                <div className={styles.actions}>
+                  <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => toggleNutrition(recept.id)}>
+                    {showNutrition[recept.id] ? "Skrij" : "Prikaži"} hranilne vrednosti
+                  </button>
+                  <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => toggleComments(recept.id)}>
+                    {showComments[recept.id] ? "Skrij" : "Prikaži"} komentarje
+                  </button>
+                  <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => startEdit(recept)}>Uredi</button>
+                  <button className={`${styles.btn} ${styles.btnDanger}`} onClick={() => izbrisiRecept(recept.id)}>Izbriši</button>
+
+                  {addSelectors[recept.id] ? (
+                    <div className={styles.jedilnikSelector}>
+                      <select
+                        className={styles.select}
+                        value={addSelectors[recept.id].selectedJedId || ""}
+                        onChange={(e) =>
+                          setAddSelectors((s) => ({
+                            ...s,
+                            [recept.id]: { ...s[recept.id], selectedJedId: e.target.value },
+                          }))
+                        }
+                      >
+                        {(addSelectors[recept.id].jedilniki || []).map((j) => (
+                          <option key={j.id} value={String(j.id)}>{j.naziv}</option>
+                        ))}
+                      </select>
+                      <button className={styles.btn} onClick={() => confirmAddToJedilnik(recept.id)}>✓</button>
+                      <button className={`${styles.btn} ${styles.btnDanger}`} onClick={() => cancelAddSelector(recept.id)}>✕</button>
+                    </div>
+                  ) : (
+                    <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => openAddToJedilnikSelector(recept.id)}>+ Jedilnik</button>
+                  )}
 
                   {getCurrentUserId() && (
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: "2px",
-                        alignItems: "center",
-                        marginLeft: "15px",
-                      }}
-                    >
-                      <span style={{ fontSize: "0.9rem", marginRight: "5px" }}>
-                        Ocenite:
-                      </span>
+                    <div className={styles.ratingAction}>
+                      <span className={styles.ratingActionLabel}>Oceni:</span>
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
                           type="button"
-                          onClick={() => handleRate(recept.id, star)}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            cursor: "pointer",
-                            fontSize: "1.2rem",
-                            padding: 0,
-                            color: "#ddd" /* Privzeto sivo */,
-                          }}
                           className={styles.starBtn}
-                          onMouseEnter={(e) =>
-                            (e.target.style.color = "#FFD700")
-                          }
-                          onMouseLeave={(e) => (e.target.style.color = "#ddd")}
-                        >
-                          ★
-                        </button>
+                          onClick={() => handleRate(recept.id, star)}
+                        >★</button>
                       ))}
                     </div>
                   )}
                 </div>
 
-                <p>{recept.opis}</p>
-
-                <div className={styles.porcijeContainer}>
-                  <label>
-                    <strong>
-                      Število porcij: {trenutnePorcije}
-                      {trenutnePorcije !== originalnePorcije && (
-                        <span style={{ fontSize: "0.9em", color: "#666" }}>
-                          {" "}
-                          (original: {originalnePorcije})
-                        </span>
-                      )}
-                    </strong>
-                  </label>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "10px",
-                      alignItems: "center",
-                      marginTop: "8px",
-                    }}
-                  >
-                    <input
-                      type="range"
-                      min="1"
-                      max="20"
-                      value={trenutnePorcije}
-                      onChange={(e) =>
-                        handlePorcijeChange(recept.id, e.target.value)
-                      }
-                      style={{
-                        flex: 1,
-                        accentColor: "#007bff",
-                      }}
-                    />
-                    <input
-                      type="number"
-                      min="1"
-                      max="20"
-                      value={trenutnePorcije}
-                      onChange={(e) =>
-                        handlePorcijeChange(recept.id, e.target.value)
-                      }
-                      style={{ width: "60px" }}
-                    />
+                {showNutrition[recept.id] && (
+                  <div style={{ marginTop: "20px" }}>
+                    <NutritionalInfo receptId={recept.id} defaultPorcije={trenutnePorcije} />
                   </div>
-                </div>
+                )}
 
-                <h3>
-                  Sestavine:
-                  {jeLoading && (
-                    <span
-                      style={{
-                        fontSize: "0.8em",
-                        color: "#007bff",
-                        marginLeft: "10px",
-                      }}
-                    >
-                      ⏳ Preračunavam...
-                    </span>
-                  )}
-                </h3>
-                <ul>
-                  {sestavineZaPrikaz.map((sestavina, index) => (
-                    <li key={index}>
-                      <strong>{sestavina.naziv}:</strong> {sestavina.kolicina}
-                      {sestavina.kolicina !== sestavina.originalaKolicina && (
-                        <span
-                          style={{
-                            fontSize: "0.85em",
-                            color: "#666",
-                            marginLeft: "8px",
-                          }}
-                        >
-                          (original: {sestavina.originalaKolicina})
-                        </span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-                <NutritionalInfo
-                  receptId={recept.id}
-                  defaultPorcije={trenutnePorcije}
-                  compact={true}
-                />
-
-                <div className={styles.buttonGroup}>
-                  <button type="button" onClick={() => startEdit(recept)}>
-                    Uredi
-                  </button>
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => izbrisiRecept(recept.id)}
-                    type="button"
-                  >
-                    Izbriši
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => toggleNutrition(recept.id)}
-                  >
-                    {showNutrition[recept.id] ? "Skrij" : "Prikaži"} hranilne
-                    vrednosti
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => toggleComments(recept.id)}
-                  >
-                    {showComments[recept.id] ? "Skrij" : "Prikaži"} komentarje
-                  </button>
-
-                  {addSelectors[recept.id] ? (
-                    <div className={styles.jedilnikSelector}>
-                      <select
-                        value={addSelectors[recept.id].selectedJedId || ""}
-                        onChange={(e) =>
-                          setAddSelectors((s) => ({
-                            ...s,
-                            [recept.id]: {
-                              ...s[recept.id],
-                              selectedJedId: e.target.value,
-                            },
-                          }))
-                        }
-                      >
-                        {(addSelectors[recept.id].jedilniki || []).map((j) => (
-                          <option key={j.id} value={String(j.id)}>
-                            {j.naziv} ({j.datum})
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        type="button"
-                        onClick={() => confirmAddToJedilnik(recept.id)}
-                      >
-                        Potrdi
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.deleteButton}
-                        onClick={() => cancelAddSelector(recept.id)}
-                      >
-                        Prekliči
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => openAddToJedilnikSelector(recept.id)}
-                    >
-                      Dodaj v jedilnik
-                    </button>
-                  )}
-                </div>
                 {showComments[recept.id] && (
-                  <div
-                    className={styles.commentsSection}
-                    style={{
-                      marginTop: "15px",
-                      borderTop: "1px solid #ccc",
-                      paddingTop: "10px",
-                    }}
-                  >
-                    <h4>Komentarji</h4>
-                    {comments[recept.id] && comments[recept.id].length > 0 ? (
-                      <ul style={{ listStyle: "none", padding: 0 }}>
-                        {comments[recept.id].map((kom) => {
-                          const isOwner =
-                            getCurrentUserId() &&
-                            kom.uporabnik &&
-                            String(kom.uporabnik.id) ===
-                              String(getCurrentUserId());
-                          const isEditing = editingCommentId === kom.id;
-
-                          return (
-                            <li
-                              key={kom.id}
-                              style={{
-                                marginBottom: "10px",
-                                padding: "8px",
-                                backgroundColor: "#f9f9f9",
-                                borderRadius: "5px",
-                                color: "black",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  fontWeight: "bold",
-                                  fontSize: "0.9em",
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <span>
-                                  {kom.uporabnik
-                                    ? kom.uporabnik.uporabniskoIme
-                                    : "Neznan uporabnik"}
-                                  <span
-                                    style={{
-                                      fontWeight: "normal",
-                                      color: "#888",
-                                      marginLeft: "10px",
-                                      fontSize: "0.8em",
-                                    }}
-                                  >
-                                    {kom.createdAt
-                                      ? new Date(
-                                          kom.createdAt,
-                                        ).toLocaleDateString()
-                                      : ""}
-                                  </span>
+                  <div className={styles.commentsSection}>
+                    <h3 className={styles.sectionTitle}>Komentarji in ocene</h3>
+                    <ul className={styles.commentList}>
+                      {(comments[recept.id] || []).length > 0 ? (
+                        comments[recept.id].map((kom) => (
+                          <li key={kom.id} className={styles.commentItem}>
+                            <div className={styles.commentHeader}>
+                              <div>
+                                <span className={styles.commentUser}>{kom.uporabnik?.uporabniskoIme || "Neznan"}</span>
+                                <span className={styles.commentDate}>
+                                  {kom.createdAt ? new Date(kom.createdAt).toLocaleDateString() : "Pravkar"}
                                 </span>
-                                {isOwner && !isEditing && (
-                                  <div>
-                                    <button
-                                      type="button"
-                                      onClick={() => startEditComment(kom)}
-                                      style={{
-                                        marginRight: "5px",
-                                        fontSize: "0.8em",
-                                        cursor: "pointer",
-                                      }}
-                                    >
-                                      Uredi
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        deleteComment(kom.id, recept.id)
-                                      }
-                                      style={{
-                                        fontSize: "0.8em",
-                                        color: "red",
-                                        cursor: "pointer",
-                                      }}
-                                    >
-                                      Izbriši
-                                    </button>
-                                  </div>
-                                )}
                               </div>
-                              {isEditing ? (
-                                <div style={{ marginTop: "5px" }}>
-                                  <textarea
-                                    value={editCommentText}
-                                    onChange={(e) =>
-                                      setEditCommentText(e.target.value)
-                                    }
-                                    style={{ width: "100%", padding: "5px" }}
-                                  />
-                                  <div style={{ marginTop: "5px" }}>
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        saveEditComment(kom.id, recept.id)
-                                      }
-                                      style={{
-                                        marginRight: "5px",
-                                        cursor: "pointer",
-                                        backgroundColor: "#28a745",
-                                        color: "white",
-                                        border: "none",
-                                        padding: "3px 8px",
-                                        borderRadius: "3px",
-                                      }}
-                                    >
-                                      Shrani
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={cancelEditComment}
-                                      style={{
-                                        cursor: "pointer",
-                                        backgroundColor: "#dc3545",
-                                        color: "white",
-                                        border: "none",
-                                        padding: "3px 8px",
-                                        borderRadius: "3px",
-                                      }}
-                                    >
-                                      Prekliči
-                                    </button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div style={{ marginTop: "5px" }}>
-                                  {kom.besedilo}
-                                </div>
+                              {getCurrentUserId() && String(kom.uporabnik?.id) === String(getCurrentUserId()) && (
+                                <button 
+                                  onClick={() => deleteComment(kom.id, recept.id)} 
+                                  className={`${styles.btn} ${styles.btnDanger}`}
+                                  style={{ padding: "4px 8px", fontSize: "0.75rem" }}
+                                >
+                                  Izbriši
+                                </button>
                               )}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    ) : (
-                      <p style={{ fontStyle: "italic", color: "#666" }}>
-                        Ni komentarjev.
-                      </p>
-                    )}
-
-                    {getCurrentUserId() ? (
-                      <div style={{ marginTop: "10px" }}>
+                            </div>
+                            <div className={styles.commentBody}>{kom.besedilo}</div>
+                          </li>
+                        ))
+                      ) : (
+                        <p style={{ color: "#64748b", textAlign: "center", fontStyle: "italic", fontSize: "0.9rem" }}>Še ni komentarjev. Bodite prvi!</p>
+                      )}
+                    </ul>
+                    {getCurrentUserId() && (
+                      <div style={{ marginTop: "20px" }}>
                         <textarea
-                          style={{
-                            width: "100%",
-                            padding: "8px",
-                            borderRadius: "4px",
-                            border: "1px solid #ccc",
-                          }}
-                          rows="3"
-                          placeholder="Dodaj komentar..."
+                          className={styles.commentTextarea}
+                          placeholder="Delite svoje mnenje o tem obroku..."
                           value={newComment[recept.id] || ""}
-                          onChange={(e) =>
-                            handleCommentChange(recept.id, e.target.value)
-                          }
-                        ></textarea>
-                        <button
-                          type="button"
-                          style={{
-                            marginTop: "5px",
-                            padding: "5px 15px",
-                            backgroundColor: "#28a745",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => submitComment(recept.id)}
-                        >
-                          Pošlji komentar
-                        </button>
-                      </div>
-                    ) : (
-                      <div
-                        style={{
-                          marginTop: "10px",
-                          color: "#666",
-                          fontSize: "0.9em",
-                        }}
-                      >
-                        Za komentiranje se morate prijaviti.
+                          onChange={(e) => handleCommentChange(recept.id, e.target.value)}
+                        />
+                        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                          <button 
+                            className={`${styles.btn} ${styles.btnPrimary}`} 
+                            onClick={() => submitComment(recept.id)}
+                            disabled={!newComment[recept.id]?.trim()}
+                          >
+                            Objavi komentar
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -958,75 +718,49 @@ function List() {
               </div>
             );
           })}
-        </div>
       </div>
-      <div className={styles.updateContainer}>
-        <h1>Posodobi recept</h1>
-        <div className={styles.onlyUpdateContainer}>
-          <form onSubmit={handleUpdate}>
-            <div className={styles.updateInputGroup}>
-              <label>Ime recepta:</label>
-              <input
-                type="text"
-                name="ime"
-                value={ime}
-                onChange={(e) => setIme(e.target.value)}
-              />
-            </div>
-            <div className={styles.updateInputGroup}>
-              <label>Opis:</label>
-              <textarea
-                name="opis"
-                value={opis}
-                onChange={(e) => setOpis(e.target.value)}
-              ></textarea>
-            </div>
-            <label>Sestavine</label>
-            <div>
-              {sestavine.map((s, idx) => (
-                <div key={idx} style={{ marginBottom: 8 }}>
-                  <input
-                    className={styles.updateSestavineInput}
-                    type="text"
-                    name={`sestavine-${idx}`}
-                    placeholder="Ime sestavine"
-                    value={s.ime}
-                    onChange={(e) =>
-                      handleSestavinaChange(idx, "ime", e.target.value)
-                    }
-                  />
-                  <input
-                    className={styles.sestavineInput}
-                    type="text"
-                    name={`kolicina-${idx}`}
-                    placeholder="Količina"
-                    value={s.kolicina}
-                    onChange={(e) =>
-                      handleSestavinaChange(idx, "kolicina", e.target.value)
-                    }
-                  />
-                </div>
-              ))}
-              <div className={styles.updateButtonGroup}>
-                <button type="button" onClick={handleAddInput}>
-                  +
-                </button>
-                <button
-                  className={styles.minusButton}
-                  type="button"
-                  onClick={handleRemoveInput}
-                >
-                  -
-                </button>
+
+      {editingId && (
+        <div className={styles.editOverlay}>
+          <div className={styles.editModal}>
+            <h2 style={{ color: "#fff", marginBottom: "20px" }}>Posodobi recept</h2>
+            <form onSubmit={handleUpdate}>
+              <div className={styles.inputGroup}>
+                <label>Ime recepta</label>
+                <input className={styles.input} type="text" value={ime} onChange={(e) => setIme(e.target.value)} />
               </div>
-            </div>
-            <button type="submit" disabled={!editingId}>
-              Posodobi recept
-            </button>
-          </form>
+              <div className={styles.inputGroup}>
+                <label>Opis</label>
+                <textarea className={styles.input} style={{ minHeight: "80px" }} value={opis} onChange={(e) => setOpis(e.target.value)} />
+              </div>
+              <div className={styles.inputGroup}>
+                <label>Postopek priprave</label>
+                <textarea className={styles.input} style={{ minHeight: "150px" }} value={navodila} onChange={(e) => setNavodila(e.target.value)} placeholder="Koraki priprave..." />
+              </div>
+              <div className={styles.inputGroup}>
+                <label>Sestavine</label>
+                <div style={{ maxHeight: "200px", overflowY: "auto", marginBottom: "10px" }}>
+                  {sestavine.map((s, idx) => (
+                    <div key={idx} style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+                      <input className={styles.input} style={{ flex: 2 }} placeholder="Ime" value={s.ime} onChange={(e) => handleSestavinaChange(idx, "ime", e.target.value)} />
+                      <input className={styles.input} style={{ flex: 1 }} placeholder="Količina" value={s.kolicina} onChange={(e) => handleSestavinaChange(idx, "kolicina", e.target.value)} />
+                    </div>
+                  ))}
+                </div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={handleAddInput}>+ Sestavina</button>
+                  <button type="button" className={`${styles.btn} ${styles.btnDanger}`} onClick={handleRemoveInput}>- Odstrani zadnjo</button>
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: "15px", marginTop: "30px" }}>
+                <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`} style={{ flex: 1 }}>Posodobi Recept</button>
+                <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} style={{ flex: 1 }} onClick={() => setEditingId(null)}>Prekliči</button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }
 

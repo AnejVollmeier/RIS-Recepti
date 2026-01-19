@@ -29,10 +29,13 @@ public class Recepti {
     private int id;
 
     private String ime;
+
+    @Column(length = 2000)
     private String opis;
 
     private int steviloPorcij = 1; // število porcij za recept
 
+    @Column(length = 5000)
     private String navodila; // koraki priprave
     private String slikaUrl; // URL slike recepta
 

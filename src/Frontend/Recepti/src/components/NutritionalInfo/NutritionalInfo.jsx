@@ -50,111 +50,98 @@ function NutritionalInfo({ receptId, defaultPorcije = 1 }) {
         <div className={styles.container}>
             <h3 className={styles.title}>Hranilne vrednosti</h3>
 
-            {/* Prikaz % dnevnega vnosa */}
-            <div className={styles.dnevniVnos}>
-                Skupaj: {hranilneVrednosti.skupneVrednosti?.kalorije?. toFixed(1) || 0} kcal
-                ({procentKalorijSkupaj}% dnevnega vnosa)
-            </div>
-
-            {/* Vrednosti na porcijo */}
-            <div className={styles.section}>
-                <h4>Na 1 porcijo</h4>
-                <div className={styles.grid}>
-                    <div className={styles.item}>
-                        <span className={styles.label}>Kalorije:</span>
-                        <span className={styles.value}>
-                            {hranilneVrednosti.naPorcijo?.kalorije?.toFixed(1) || 0} kcal
-                        </span>
+            {/* Macro Summary Dashboard */}
+            <div className={styles.macroDashboard}>
+                <div className={`${styles.macroCard} ${styles.calories}`}>
+                    <div className={styles.macroValue}>
+                        {hranilneVrednosti.naPorcijo?.kalorije?.toFixed(0) || 0}
                     </div>
-                    <div className={styles.item}>
-                        <span className={styles.label}>Maščobe:</span>
-                        <span className={styles.value}>
-                            {hranilneVrednosti.naPorcijo?.mascobe?.toFixed(1) || 0} g
-                        </span>
+                    <div className={styles.macroLabel}>kcal / porcijo</div>
+                </div>
+                <div className={`${styles.macroCard} ${styles.proteins}`}>
+                    <div className={styles.macroValue}>
+                        {hranilneVrednosti.naPorcijo?.proteini?.toFixed(1) || 0}g
                     </div>
-                    <div className={styles.item}>
-                        <span className={styles.label}>Proteini:</span>
-                        <span className={styles.value}>
-                            {hranilneVrednosti.naPorcijo?.proteini?.toFixed(1) || 0} g
-                        </span>
+                    <div className={styles.macroLabel}>Proteini</div>
+                </div>
+                <div className={`${styles.macroCard} ${styles.carbs}`}>
+                    <div className={styles.macroValue}>
+                        {hranilneVrednosti.naPorcijo?.ogljikoviHidrati?.toFixed(1) || 0}g
                     </div>
-                    <div className={styles.item}>
-                        <span className={styles. label}>Ogljikovi hidrati:</span>
-                        <span className={styles.value}>
-                            {hranilneVrednosti.naPorcijo?.ogljikoviHidrati?.toFixed(1) || 0} g
-                        </span>
+                    <div className={styles.macroLabel}>OH</div>
+                </div>
+                <div className={`${styles.macroCard} ${styles.fat}`}>
+                    <div className={styles.macroValue}>
+                        {hranilneVrednosti.naPorcijo?.mascobe?.toFixed(1) || 0}g
                     </div>
+                    <div className={styles.macroLabel}>Maščobe</div>
                 </div>
             </div>
 
-            {/* Skupne vrednosti */}
-            <div className={styles.section}>
-                <h4>Skupaj (za {defaultPorcije} {defaultPorcije === 1 ?  "porcijo" : defaultPorcije === 2 ? "porciji" : "porcij"})</h4>
-                <div className={styles.grid}>
-                    <div className={styles.item}>
-                        <span className={styles.label}>Kalorije:</span>
-                        <span className={styles.value}>
-                            {hranilneVrednosti.skupneVrednosti?.kalorije?. toFixed(1) || 0} kcal
-                        </span>
-                    </div>
-                    <div className={styles.item}>
-                        <span className={styles.label}>Maščobe:</span>
-                        <span className={styles.value}>
-                            {hranilneVrednosti.skupneVrednosti?.mascobe?.toFixed(1) || 0} g
-                        </span>
-                    </div>
-                    <div className={styles.item}>
-                        <span className={styles.label}>Proteini:</span>
-                        <span className={styles.value}>
-                            {hranilneVrednosti.skupneVrednosti?.proteini?.toFixed(1) || 0} g
-                        </span>
-                    </div>
-                    <div className={styles.item}>
-                        <span className={styles.label}>Ogljikovi hidrati:</span>
-                        <span className={styles.value}>
-                            {hranilneVrednosti.skupneVrednosti?.ogljikoviHidrati?.toFixed(1) || 0} g
-                        </span>
-                    </div>
+            {/* Daily Intake Progress Bar */}
+            <div className={styles.dailyIntakeContainer}>
+                <div className={styles.dailyIntakeHeader}>
+                    <span>Dnevni vnos (2500 kcal)</span>
+                    <span className={styles.percentageText}>{procentKalorijSkupaj}%</span>
                 </div>
+                <div className={styles.progressBarBg}>
+                    <div 
+                        className={styles.progressBarFill} 
+                        style={{ width: `${Math.min(procentKalorijSkupaj, 100)}%` }}
+                    ></div>
+                </div>
+                <p className={styles.helperText}>
+                    Ta obrok predstavlja {procentKalorijSkupaj}% priporočenega dnevnega vnosa kalorij.
+                </p>
             </div>
 
-            {/* Gumb za prikaz sestavin */}
+            {/* Toggle Button */}
             <button
                 className={styles.toggleButton}
                 onClick={() => setPokaziSestavine(!pokaziSestavine)}
             >
-                {pokaziSestavine ? "Skrij" : "Prikaži"} podrobnosti po sestavinah
+                {pokaziSestavine ? "Skrij podrobnosti po sestavinah" : "Prikaži podrobnosti po sestavinah"}
             </button>
 
-            {/* Seznam sestavin */}
+            {/* Detailed view */}
             {pokaziSestavine && (
                 <div className={styles.sestavineList}>
-                    <h4>Hranilne vrednosti po sestavinah:</h4>
-                    {hranilneVrednosti.sestavine?.map((sestavina, index) => (
-                        <div
-                            key={index}
-                            className={`${styles.sestavinaCard} ${
-                                ! sestavina.najdeno ? styles. niNajdeno : ""
-                            }`}
-                        >
-                            <div className={styles.sestavinaHeader}>
-                                <strong>{sestavina.naziv}</strong>
-                                <span className={styles.kolicina}>({sestavina.kolicina})</span>
-                            </div>
-                            {sestavina.najdeno ?  (
-                                <div className={styles.sestavinaGrid}>
-                                    <span>Kalorije:  {sestavina.kalorije?.toFixed(1) || 0} kcal</span>
-                                    <span>Maščobe: {sestavina.mascobe?.toFixed(1) || 0} g</span>
-                                    <span>Proteini: {sestavina.proteini?.toFixed(1) || 0} g</span>
-                                    <span>Ogljikovi hidrati: {sestavina.ogljikoviHidrati?.toFixed(1) || 0} g</span>
+                    <h4 className={styles.sectionTitle}>Podrobna analiza (za {defaultPorcije} {defaultPorcije === 1 ? "porcijo" : "porcij"})</h4>
+                    <div className={styles.sestavineGrid}>
+                        {hranilneVrednosti.sestavine?.map((sestavina, index) => (
+                            <div
+                                key={index}
+                                className={`${styles.sestavinaBox} ${!sestavina.najdeno ? styles.notFound : ""}`}
+                            >
+                                <div className={styles.sestavinaHeader}>
+                                    <span className={styles.sestavinaIme}>{sestavina.naziv}</span>
+                                    <span className={styles.sestavinaKolicina}>{sestavina.kolicina}</span>
                                 </div>
-                            ) : (
-                                <p className={styles.niNajdenoText}>
-                                    Podatki niso na voljo
-                                </p>
-                            )}
-                        </div>
-                    ))}
+                                {sestavina.najdeno ? (
+                                    <div className={styles.sestavinaMacros}>
+                                        <div className={styles.miniMacro}>
+                                            <span className={styles.miniLabel}>Kal:</span>
+                                            <span className={styles.miniValue}>{sestavina.kalorije?.toFixed(0)}</span>
+                                        </div>
+                                        <div className={styles.miniMacro}>
+                                            <span className={styles.miniLabel}>P:</span>
+                                            <span className={styles.miniValue}>{sestavina.proteini?.toFixed(1)}g</span>
+                                        </div>
+                                        <div className={styles.miniMacro}>
+                                            <span className={styles.miniLabel}>OH:</span>
+                                            <span className={styles.miniValue}>{sestavina.ogljikoviHidrati?.toFixed(1)}g</span>
+                                        </div>
+                                        <div className={styles.miniMacro}>
+                                            <span className={styles.miniLabel}>M:</span>
+                                            <span className={styles.miniValue}>{sestavina.mascobe?.toFixed(1)}g</span>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className={styles.noDataText}>Podatki niso na voljo</div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>

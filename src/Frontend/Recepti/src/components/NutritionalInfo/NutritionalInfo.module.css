@@ -1,184 +1,229 @@
 .container {
-    background-color: hsla(223, 8%, 18%, 0.9);
-    border:  2px solid hsl(208, 73%, 54%);
-    border-radius: 8px;
-    padding:  20px;
-    margin-top: 20px;
-    color: #fff;
+    background: var(--item-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 24px;
+    margin-top: 24px;
+    color: var(--text-primary);
 }
 
 .title {
-    color: hsl(208, 73%, 54%);
-    margin-bottom: 15px;
-    font-size: 1.5rem;
-    text-align: center;
-}
-
-.porcijeControl {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    justify-content: center;
+    gap: 12px;
 }
 
-.porcijeControl label {
-    color: hsl(208, 73%, 54%);
-    font-weight: bold;
-}
-
-.porcijeInput {
-    width: 80px;
-    padding: 8px;
-    border: 1px solid hsl(208, 73%, 54%);
-    background-color: hsla(223, 8%, 18%, 0.9);
+.title::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 24px;
+    background: var(--primary);
     border-radius: 4px;
-    color: #f8f8f8;
-    text-align: center;
 }
 
-.section {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-}
-
-.section h4 {
-    color:  hsl(194, 99%, 45%);
-    margin-bottom: 10px;
-    font-size: 1.1rem;
-}
-
-.grid {
+.macroDashboard {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
 }
 
-.item {
+.macroCard {
+    background: var(--card-bg);
+    padding: 16px 8px;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px solid var(--card-border);
+    transition: all 0.3s;
+}
+
+.macroCard:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    background: var(--card-bg);
+}
+
+.macroValue {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 2px;
+}
+
+.macroLabel {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+}
+
+/* Macro Colors */
+.calories .macroValue { color: #fbbf24; }
+.proteins .macroValue { color: #38bdf8; }
+.carbs .macroValue { color: #4ade80; }
+.fat .macroValue { color: #f472b6; }
+
+/* Daily Intake Progress Bar */
+.dailyIntakeContainer {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    border: 1px solid var(--card-border);
+}
+
+.dailyIntakeHeader {
     display: flex;
     justify-content: space-between;
-    padding: 8px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
 }
 
-.label {
-    color: #ccc;
-    font-weight: 500;
+.percentageText {
+    color: var(--primary);
 }
 
-.value {
-    color: #fff;
-    font-weight: bold;
+.progressBarBg {
+    height: 8px;
+    background: var(--item-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.progressBarFill {
+    height: 100%;
+    background: linear-gradient(90deg, #38bdf8, #818cf8);
+    border-radius: 10px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+
+.helperText {
+    font-size: 0.85rem;
+    color: #adb5bd;
+    margin: 0;
 }
 
 .toggleButton {
     width: 100%;
-    padding:  12px;
-    background-color:  hsl(208, 73%, 54%);
+    padding: 14px;
+    background-color: transparent;
     color: #fff;
-    border:  none;
-    border-radius:  5px;
-    font-size:  1rem;
-    cursor:  pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
 .toggleButton:hover {
-    background-color: hsl(208, 73%, 64%);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
 }
 
+/* Detailed List */
 .sestavineList {
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 2px solid hsl(208, 73%, 54%);
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.sestavineList h4 {
-    color: hsl(208, 73%, 54%);
-    margin-bottom: 15px;
+.sectionTitle {
+    color: #fff;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
 }
 
-.sestavinaCard {
-    background-color: rgba(0, 0, 0, 0.3);
-    border: 1px solid hsl(194, 99%, 45%);
-    border-radius: 5px;
+.sestavineGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+}
+
+.sestavinaBox {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
     padding: 12px;
-    margin-bottom:  10px;
 }
 
-.sestavinaCard.niNajdeno {
-    border-color: hsl(313, 73%, 54%);
-    opacity: 0.7;
+.sestavinaBox.notFound {
+    opacity: 0.6;
+    border-style: dashed;
 }
 
 .sestavinaHeader {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
-    color: hsl(194, 99%, 45%);
+    margin-bottom: 10px;
 }
 
-.kolicina {
-    color: #ccc;
-    font-style: italic;
+.sestavinaIme {
+    font-weight: 600;
 }
 
-.sestavinaGrid {
-    display:  grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 8px;
+.sestavinaKolicina {
+    color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
-.niNajdenoText {
-    color: hsl(313, 73%, 54%);
+.sestavinaMacros {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.miniMacro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+.miniLabel {
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.miniValue {
+    font-weight: 600;
+}
+
+.noDataText {
+    font-size: 0.8rem;
+    color: #ef4444;
     font-style: italic;
-    margin:  0;
+    text-align: center;
+}
+
+.loading, .error {
+    text-align: center;
+    padding: 24px;
 }
 
 .loading {
-    text-align: center;
-    padding: 20px;
-    color: hsl(194, 99%, 45%);
-    font-size: 1.1rem;
+    color: hsl(208, 73%, 54%);
 }
 
 .error {
-    text-align: center;
-    padding: 20px;
-    color: hsl(313, 73%, 54%);
-    background-color: rgba(220, 53, 69, 0.1);
-    border: 1px solid hsl(313, 73%, 54%);
-    border-radius: 5px;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 8px;
 }
 
-.procentInline {
-     display: inline-block;
-     margin-left: 8px;
-     font-size: 0.85rem;
-     color: hsl(194, 99%, 45%);
-     font-weight: normal;
- }
-
-.dvNote {
-    margin-top: 10px;
-    font-size:  0.8rem;
-    color: #999;
-    font-style: italic;
-    text-align: center;
-}
-.dnevniVnos {
-    text-align: center;
-    font-size: 1.1rem;
-    color: hsl(194, 99%, 45%);
-    font-weight: bold;
-    padding: 12px;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 5px;
-    margin-bottom: 20px;
-    border: 1px solid hsl(194, 99%, 45%);
+@media (max-width: 600px) {
+    .macroDashboard {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }

@@ -1,94 +1,112 @@
-.formcontainer {
-  font-family: Arial, Helvetica, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px auto;
-}
-.formcontainer h1 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-  font-size: bold;
-  color: rgb(30, 117, 193);
-}
-.onlyformContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 400px;
-  border: 2px solid hsl(208, 73%, 54%);
-  border-radius: 5px;
-  padding: 20px;
-  margin: auto 20px;
-  background-color: hsla(223, 8%, 18%, 0.9);
-}
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
+.formContainer {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 32px;
   width: 100%;
 }
-.inputGroup input,
-.inputGroup textarea {
-  padding: 8px;
-  border: 1px solid hsl(208, 73%, 54%);
-  background-color: hsla(223, 8%, 18%, 0.9);
-  border-radius: 4px;
-  font-size: 1rem;
-  color: #f8f8f8;
-}
-.inputGroup textarea {
-  resize: vertical;
-  height: 100px;
-}
-.sestavineInput {
-  margin-bottom: 15px;
-}
-label {
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: hsl(208, 73%, 54%);
-}
-input {
-  border: 1px solid hsl(208, 73%, 54%);
-  background-color: hsla(223, 8%, 18%, 0.9);
-  border-radius: 4px;
-  font-size: 1rem;
-  color: #f8f8f8;
-  height: 30px;
-}
-.buttonGroup button {
-  height: 30px;
-  width: 30px;
-  font-weight: bold;
-  font-size: 1.2rem;
-  margin-right: 10px;
-  border-radius: 5px;
-  border: none;
-  background-color: hsl(194, 99%, 45%);
-  cursor: pointer;
-  color: #fff;
-}
-.buttonGroup button:hover {
-  background-color: hsl(194, 99%, 55%);
-  cursor: pointer;
-}
-.buttonGroup .minusButton {
-  background-color: hsl(313, 73%, 54%);
+
+.title {
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 32px;
+  text-align: left;
+  letter-spacing: -0.02em;
 }
 
-.buttonGroup .minusButton:hover {
-  background-color: hsl(313, 73%, 64%);
-  cursor: pointer;
+.inputGroup label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
-button[type="submit"] {
-  display: flex;
-  padding: 10px 20px;
-  background-color: hsl(208, 73%, 54%);
-  color: #fff;
-  border: none;
-  border-radius: 5px;
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  color: var(--text-primary);
+  transition: all 0.3s;
+  font-size: 0.95rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--input-bg);
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+}
+
+.textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.sectionTitle {
+  color: var(--text-primary);
   font-size: 1rem;
-  cursor: pointer;
-  margin: 10px auto;
+  margin: 25px 0 15px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 8px;
 }
+
+.sestavinaRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.btnGroup {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.9rem;
+}
+
+.btnPrimary {
+  background: var(--primary-gradient);
+  color: #fff;
+  width: 100%;
+  margin-top: 24px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.btnSecondary {
+  background: var(--item-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--card-border);
+}
+
+.portionBadge {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  margin-left: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+

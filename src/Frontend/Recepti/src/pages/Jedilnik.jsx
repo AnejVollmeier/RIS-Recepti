@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import api from "../server/server";
-import styles from "../components/List/list.module.css";
+import pageStyles from "./Jedilnik.module.css";
+import formStyles from "../components/Form/form.module.css";
+import listStyles from "../components/List/list.module.css";
 
 function Jedilnik() {
   const [jedilniki, setJedilniki] = useState([]);
@@ -101,70 +104,142 @@ function Jedilnik() {
     }
   };
 
+  const getOsebeLabel = (n) => {
+    if (n === 1) return "oseba";
+    if (n === 2) return "osebi";
+    if (n === 3 || n === 4) return "osebe";
+    return "oseb";
+  };
+
   return (
-    <div className={styles.listContainer}>
-      <h1 className="page-title">Moji jedilniki</h1>
+    <div className={pageStyles.pageContainer}>
+      <header className={pageStyles.header}>
+        <h1 className={pageStyles.title}>Moji Jedilniki</h1>
+        <p className={pageStyles.subtitle}>Načrtujte svoje obroke in organizirajte tedenski meni</p>
+      </header>
 
-      <button onClick={fetchMyJedilniki} style={{ marginBottom: 16, background: '#3498db', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 4, cursor: 'pointer' }}>
-        Osveži seznam
-      </button>
-
-      <section className={styles.updateContainer} style={{ marginBottom: 24 }}>
-        <h2>Ustvari nov jedilnik</h2>
-        <div className={styles.onlyUpdateContainer}>
-          <form onSubmit={handleCreate}>
-            <div className={styles.updateInputGroup}>
-              <label>Naziv: </label>
-              <input value={naziv} onChange={(e) => setNaziv(e.target.value)} required />
-            </div>
-            <div className={styles.updateInputGroup}>
-              <label>Datum: </label>
-              <input type="date" value={datum} onChange={(e) => setDatum(e.target.value)} required />
-            </div>
-            <div className={styles.updateInputGroup}>
-              <label>Število oseb: </label>
-              <input type="number" min={1} value={steviloOseb} onChange={(e) => setSteviloOseb(parseInt(e.target.value))} required />
-            </div>
-            <button type="submit" disabled={loading}>{loading ? "Ustvarjam..." : "Ustvari"}</button>
-          </form>
-        </div>
-      </section>
-
-      <section className={styles.onlyListContainer}>
-        <h2>Seznam jedilnikov</h2>
-        {jedilniki.length === 0 && <p>Ni najdenih jedilnikov.</p>}
-        {jedilniki.map((j) => (
-          <div key={j.id} className={styles.receptCard}>
-            <h3>{j.naziv}</h3>
-            <p>Datum: {j.datum}</p>
-            <p>Število oseb: {j.steviloOseb}</p>
-            <div>
-              <strong>Recepti v jedilniku:</strong>
-              {(!j.recepti || j.recepti.length === 0) ? (
-                <p style={{ fontStyle: 'italic', color: '#888' }}>Ni receptov. Dodaj recepte na strani Recepti.</p>
-              ) : (
-                <ul>
-                  {j.recepti.map((r) => (
-                    <li key={r.id}>
-                      {r.ime}
-                      <button
-                        onClick={() => handleRemoveRecept(j.id, r.id)}
-                        style={{ marginLeft: 8, background: '#e74c3c', color: '#fff', border: 'none', borderRadius: 4, padding: '2px 8px', cursor: 'pointer' }}
-                      >
-                        Odstrani
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div className={styles.buttonGroup} style={{ marginTop: 8 }}>
-              <button onClick={() => handleDelete(j.id)} style={{ background: '#c0392b', color: '#fff' }}>Izbriši jedilnik</button>
-            </div>
+      <div className={pageStyles.contentWrapper}>
+        <aside className={pageStyles.sidebar}>
+          <div className={pageStyles.formBox}>
+            <h2 className={pageStyles.formTitle}>Nov Jedilnik</h2>
+            <form onSubmit={handleCreate} className={formStyles.form}>
+              <div className={formStyles.inputGroup}>
+                <label>Naziv</label>
+                <input 
+                  className={formStyles.input}
+                  value={naziv} 
+                  onChange={(e) => setNaziv(e.target.value)} 
+                  placeholder="npr. Tedenski meni"
+                  required 
+                />
+              </div>
+              <div className={formStyles.inputGroup}>
+                <label>Datum</label>
+                <input 
+                  type="date" 
+                  className={formStyles.input}
+                  value={datum} 
+                  onChange={(e) => setDatum(e.target.value)} 
+                  required 
+                />
+              </div>
+              <div className={formStyles.inputGroup}>
+                <label>Število oseb</label>
+                <input 
+                  type="number" 
+                  className={formStyles.input}
+                  min={1} 
+                  value={steviloOseb} 
+                  onChange={(e) => setSteviloOseb(parseInt(e.target.value))} 
+                  required 
+                />
+              </div>
+              <button 
+                type="submit" 
+                className={`${formStyles.btn} ${formStyles.btnPrimary}`} 
+                disabled={loading}
+              >
+                {loading ? "Ustvarjam..." : "Ustvari Jedilnik"}
+              </button>
+            </form>
           </div>
-        ))}
-      </section>
+        </aside>
+
+        <main className={pageStyles.mainContent}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+            <h2 style={{ margin: 0, fontWeight: 800 }}>Vsi jedilniki</h2>
+            <button 
+              onClick={fetchMyJedilniki} 
+              className={`${listStyles.btn} ${listStyles.btnPrimary}`}
+              style={{ padding: '8px 20px', fontSize: '0.8rem' }}
+            >
+              Osveži Seznam
+            </button>
+          </div>
+
+          {jedilniki.length === 0 ? (
+            <div className={pageStyles.emptyState}>
+              <p>Ni najdenih jedilnikov. Ustvarite prvega v obrazcu na levi!</p>
+            </div>
+          ) : (
+            <div className={listStyles.recipeGrid}>
+              {jedilniki.map((j) => (
+                <div key={j.id} className={pageStyles.jedilnikCard}>
+                  <div className={pageStyles.jedilnikHeader}>
+                    <div>
+                      <h3 className={pageStyles.jedilnikTitle}>{j.naziv}</h3>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: 4 }}>
+                        {new Date(j.datum).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <span className={pageStyles.jedilnikBadge}>
+                      👥 {j.steviloOseb} {getOsebeLabel(j.steviloOseb)}
+                    </span>
+                  </div>
+
+                  <div className={listStyles.ingredientsList} style={{ marginTop: 20 }}>
+                    <h4 style={{ fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--primary)', marginBottom: 12 }}>
+                      Recepti v jedilniku
+                    </h4>
+                    {(!j.recepti || j.recepti.length === 0) ? (
+                      <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                        Jedilnik je še prazen. Dodajte recepte na glavni strani.
+                      </p>
+                    ) : (
+                      <ul className={pageStyles.recipeList}>
+                        {j.recepti.map((r) => (
+                          <li key={r.id} className={pageStyles.recipeItem}>
+                            <Link to={`/#recept-${r.id}`} className={pageStyles.recipeName}>
+                              {r.ime}
+                            </Link>
+                            <button
+                              onClick={() => handleRemoveRecept(j.id, r.id)}
+                              className={`${listStyles.btn} ${listStyles.btnDanger}`}
+                              style={{ padding: '4px 10px', fontSize: '0.75rem', borderRadius: '8px' }}
+                            >
+                              Odstrani
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+
+                  <div className={listStyles.actions}>
+                    <button 
+                      onClick={() => handleDelete(j.id)} 
+                      className={`${listStyles.btn} ${listStyles.btnDanger}`}
+                      style={{ width: '100%' }}
+                    >
+                       Izbriši jedilnik
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

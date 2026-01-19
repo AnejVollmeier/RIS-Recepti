@@ -5,6 +5,7 @@ import styles from "./form.module.css";
 function Form() {
   const [ime, setIme] = useState("");
   const [opis, setOpis] = useState("");
+  const [navodila, setNavodila] = useState("");
   const [sestavine, setSestavine] = useState([{ ime: "", kolicina: "" }]);
   const [steviloPorcij, setSteviloPorcij] = useState(1);
 
@@ -44,6 +45,7 @@ function Form() {
     const payload = {
       ime,
       opis,
+      navodila,
       steviloPorcij,
       sestavine: sestavine.map((s) => ({ naziv: s.ime, kolicina: s.kolicina })),
     };
@@ -58,6 +60,7 @@ function Form() {
       }
       setIme("");
       setOpis("");
+      setNavodila("");
       setSestavine([{ ime: "", kolicina: "" }]);
       setSteviloPorcij(1);
     } catch (err) {
@@ -66,98 +69,117 @@ function Form() {
   };
 
   return (
-    <>
-      <div className={styles.formcontainer}>
-        <h1>Dodaj recept</h1>
-        <div className={styles.onlyformContainer}>
-          <form onSubmit={dodajRecept}>
-            <div className={styles.inputGroup}>
-              <label>Ime recepta:</label>
-              <input
-                type="text"
-                name="ime"
-                value={ime}
-                onChange={(e) => setIme(e.target.value)}
-              />
-            </div>
-            <div className={styles.inputGroup}>
-              <label>Opis:</label>
-              <textarea
-                name="opis"
-                value={opis}
-                onChange={(e) => setOpis(e.target.value)}
-              ></textarea>
-            </div>
-            <div className={styles.inputGroup}>
-              <label>Število porcij: {steviloPorcij}</label>
-              <div
-                style={{ display: "flex", gap: "10px", alignItems: "center" }}
-              >
-                <input
-                  type="range"
-                  min="1"
-                  max="20"
-                  value={steviloPorcij}
-                  onChange={(e) => handlePorcijeChange(e.target.value)}
-                  style={{
-                    flex: 1,
-                    accentColor: "#007bff",
-                  }}
-                />
-                <input
-                  type="number"
-                  min="1"
-                  max="20"
-                  value={steviloPorcij}
-                  onChange={(e) => handlePorcijeChange(e.target.value)}
-                  style={{ width: "60px" }}
-                />
-              </div>
-            </div>
-            <label>Sestavine</label>
-            <div>
-              {sestavine.map((s, idx) => (
-                <div key={idx} style={{ marginBottom: 8 }}>
-                  <input
-                    className={styles.sestavineInput}
-                    type="text"
-                    name={`sestavine-${idx}`}
-                    placeholder="Ime sestavine"
-                    value={s.ime}
-                    onChange={(e) =>
-                      handleSestavinaChange(idx, "ime", e.target.value)
-                    }
-                  />
-                  <input
-                    className={styles.sestavineInput}
-                    type="text"
-                    name={`kolicina-${idx}`}
-                    placeholder="Količina"
-                    value={s.kolicina}
-                    onChange={(e) =>
-                      handleSestavinaChange(idx, "kolicina", e.target.value)
-                    }
-                  />
-                </div>
-              ))}
-              <div className={styles.buttonGroup}>
-                <button type="button" onClick={handleAddInput}>
-                  +
-                </button>
-                <button
-                  className={styles.minusButton}
-                  type="button"
-                  onClick={handleRemoveInput}
-                >
-                  -
-                </button>
-              </div>
-            </div>
-            <button type="submit">Dodaj recept</button>
-          </form>
+    <div className={styles.formContainer}>
+      <h2 className={styles.title}>Novi Recept</h2>
+      <form onSubmit={dodajRecept}>
+        <div className={styles.inputGroup}>
+          <label>Ime recepta</label>
+          <input
+            className={styles.input}
+            type="text"
+            value={ime}
+            onChange={(e) => setIme(e.target.value)}
+            placeholder="npr. Goveji golaž"
+            required
+          />
         </div>
-      </div>
-    </>
+        
+        <div className={styles.inputGroup}>
+          <label>Kratek opis</label>
+          <textarea
+            className={`${styles.input} ${styles.textarea}`}
+            style={{ minHeight: "80px" }}
+            value={opis}
+            onChange={(e) => setOpis(e.target.value)}
+            placeholder="Kratek povzetek recepta..."
+            required
+          ></textarea>
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label>Postopek priprave</label>
+          <textarea
+            className={`${styles.input} ${styles.textarea}`}
+            style={{ minHeight: "150px" }}
+            value={navodila}
+            onChange={(e) => setNavodila(e.target.value)}
+            placeholder="Napišite korake priprave..."
+            required
+          ></textarea>
+        </div>
+
+        <div className={styles.inputGroup}>
+          <label>
+            Število porcij <span className={styles.portionBadge}>{steviloPorcij}</span>
+          </label>
+          <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+            <input
+              type="range"
+              min="1"
+              max="20"
+              value={steviloPorcij}
+              onChange={(e) => handlePorcijeChange(e.target.value)}
+              style={{ flex: 1, accentColor: "hsl(208, 73%, 54%)" }}
+            />
+            <input
+              className={styles.input}
+              type="number"
+              min="1"
+              max="20"
+              value={steviloPorcij}
+              onChange={(e) => handlePorcijeChange(e.target.value)}
+              style={{ width: "70px", textAlign: "center" }}
+            />
+          </div>
+        </div>
+
+        <h3 className={styles.sectionTitle}>Sestavine</h3>
+        {sestavine.map((s, idx) => (
+          <div key={idx} className={styles.sestavinaRow}>
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="Sestavina"
+              value={s.ime}
+              onChange={(e) => handleSestavinaChange(idx, "ime", e.target.value)}
+              required
+            />
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="Kol."
+              value={s.kolicina}
+              onChange={(e) => handleSestavinaChange(idx, "kolicina", e.target.value)}
+              style={{ width: "100px" }}
+              required
+            />
+          </div>
+        ))}
+
+        <div className={styles.btnGroup}>
+          <button 
+            type="button" 
+            className={`${styles.btn} ${styles.btnSecondary}`}
+            onClick={handleAddInput}
+          >
+            + Dodaj
+          </button>
+          {sestavine.length > 1 && (
+            <button
+              type="button"
+              className={`${styles.btn} ${styles.btnDanger}`}
+              onClick={handleRemoveInput}
+            >
+              Odstrani
+            </button>
+          )}
+        </div>
+
+        <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
+          Objavi Recept
+        </button>
+      </form>
+    </div>
   );
 }
 

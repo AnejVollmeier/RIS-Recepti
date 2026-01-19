@@ -38,8 +38,14 @@ public class DataInitializer implements CommandLineRunner {
             // 2. Ustvari recepte z komentarji in ocenami
 
             Recepti r1 = createRecept("Domače Palačinke",
-                    "Najboljše puhaste palačinke po babičinem receptu.",
-                    "1. Zmešaj jajca in sladkor.\n2. Dodaj moko in mleko.\n3. Peci na vroči ponvi.",
+                    "Najboljše puhaste palačinke po babičinem receptu. Idealne za nedeljski zajtrk.",
+                    "1. V večji posodi zmešajte jajca, ščepec soli in žlico sladkorja.\n" +
+                            "2. Postopoma dodajajte moko in mleko, medtem ko nenehno stepate z metlico, da dobite gladko maso brez grudic.\n"
+                            +
+                            "3. Maso pustite počivati vsaj 15 minut na sobni temperaturi.\n" +
+                            "4. Ponev za palačinke rahlo namastite in močno segrejte.\n" +
+                            "5. Z zajemalko vlijte maso in jo enakomerno razporedite po ponvi.\n" +
+                            "6. Pecite približno 1-2 minuti na vsaki strani, dokler palačinka ne postane zlato-rjava.",
                     4,
                     userDemo,
                     new Sestavine("Bela moka", "250g"),
@@ -57,8 +63,16 @@ public class DataInitializer implements CommandLineRunner {
             receptiRepository.save(r1);
 
             Recepti r2 = createRecept("Testenine Carbonara",
-                    "Originalna italijanska carbonara brez smetane.",
-                    "1. Skuhaj testenine al dente.\n2. Prepraži guanciale.\n3. Zmešaj jajca in pecorino.\n4. Vse skupaj zmešaj na zmanjšanem ognju.",
+                    "Originalna italijanska carbonara brez smetane. Skrivnost je v kakovostnih sestavinah.",
+                    "1. Velik lonec vode osolite in zavrite. Dodajte špagete in jih skuhajte 'al dente'.\n" +
+                            "2. Medtem ko se testenine kuhajo, narežite guanciale na majhne koščke in ga v ponvi prepražite na zmernem ognju, da postane hrustljav.\n"
+                            +
+                            "3. V manjši posodi zmešajte celo jajce, rumenjaka in nariban pecorino romano s sveže mletim poprom.\n"
+                            +
+                            "4. Ko so testenine kuhane, jih z zajemalko prenesite neposredno v ponev h guancialu.\n" +
+                            "5. Ponev odstavite z ognja! To je ključno. Prilijte jajčno mešanico in nekaj žlic vode od kuhanja testenin.\n"
+                            +
+                            "6. Hitro in neprestano mešajte, da se ustvari kremna omaka, ne da bi jajca zakrknila.",
                     4,
                     userDemo,
                     new Sestavine("Spaghetti", "400g"),
@@ -74,8 +88,17 @@ public class DataInitializer implements CommandLineRunner {
             receptiRepository.save(r2);
 
             Recepti r3 = createRecept("Zelenjavna Juha",
-                    "Zdrava in lahka juha za hladne dni.",
-                    "1. Nareži zelenjavo.\n2. Prepraži na olju.\n3. Zalij z vodo in kuhaj 20 min.",
+                    "Bogata in hranljiva zelenjavna juha, pripravljena iz svežih sezonskih sestavin.",
+                    "1. Čebulo in por očistite ter drobno sesekljajte. Korenje in krompir olupite ter narežite na enakomerne kocke.\n"
+                            +
+                            "2. V velikem loncu segrejte malo oljčnega olja in na njem počasi pražite čebulo in por, dokler ne ovenita.\n"
+                            +
+                            "3. Dodajte preostalo zelenjavo in vse skupaj pražite še 5 minut, da se sprostijo arome.\n"
+                            +
+                            "4. Zalijte z 1,5 litra vode ali zelenjavne osnove, posolite in popoprajte po okusu.\n" +
+                            "5. Ko juha zavre, zmanjšajte ogenj in kuhajte približno 20-25 minut, da se zelenjava zmehča.\n"
+                            +
+                            "6. Po želji lahko del juhe pretlačite s paličnim mešalnikom za bolj kremno teksturo.",
                     4,
                     userAna,
                     new Sestavine("Korenje", "3"),
@@ -90,8 +113,18 @@ public class DataInitializer implements CommandLineRunner {
             receptiRepository.save(r3);
 
             Recepti r4 = createRecept("Pica Margherita",
-                    "Domača pica kot iz krušne peči.",
-                    "1. Zamesi testo in pusti vzhajati.\n2. Razvaljaj in obloži s pelati in mocarelo.\n3. Peci na najvišji temperaturi 10 min.",
+                    "Domača pica s hrustljavo skorjico in sočnim nadevom, narejena po tradicionalnem postopku.",
+                    "1. V posodi zmešajte moko, kvas in ščepec soli. Postopoma dodajajte mlačno vodo in zamesite gladko testo.\n"
+                            +
+                            "2. Testo gnetite vsaj 10 minut, nato ga pokrijte in pustite vzhajati na toplem mestu približno 1 uro.\n"
+                            +
+                            "3. Medtem ko testo vzhaja, pripravite paradižnikovo omako iz pelatov, ki jih malo posolite in dodate baziliko.\n"
+                            +
+                            "4. Pečico segrejte na najvišjo možno temperaturo (navadno 250°C ali več). Če imate kamen za peko, ga vstavite v pečico.\n"
+                            +
+                            "5. Vzhajano testo razvlecite z rokami v krog, nanesite paradižnikovo omako, dodajte natrgano mocarelo in pokapljajte z oljčnim oljem.\n"
+                            +
+                            "6. Pecite 7-10 minut, dokler robovi niso zlato rjavi in sir mehurčkast.",
                     2,
                     userMarko,
                     new Sestavine("Moka za pico", "500g"),
@@ -104,8 +137,17 @@ public class DataInitializer implements CommandLineRunner {
             receptiRepository.save(r4);
 
             Recepti r5 = createRecept("Rižota z Gamberi",
-                    "Kremna morska rižota polnega okusa.",
-                    "1. Na olju popraži česen in gambere.\n2. Dodaj riž in zalij z belim vinom.\n3. Postopoma dodajaj ribjo osnovo.\n4. Na koncu vmešaj maslo.",
+                    "Prefinjena in kremna rižota, ki vas bo popeljala naravnost na obalo Italije.",
+                    "1. V široki ponvi segrejte malo oljčnega olja in na hitro prepražite gambere. Odstavite jih na krožnik.\n"
+                            +
+                            "2. V isti ponvi prepražite drobno sesekljano šalotko in strok česna, da zadiši.\n" +
+                            "3. Dodajte riž Arborio in ga pražite kakšno minuto, da postane prosojen.\n" +
+                            "4. Prilijte suho belo vino in počakajte, da popolnoma izpari.\n" +
+                            "5. Nato postopoma, zajemalko za zajemalko, dodajajte vročo ribjo ali zelenjavno osnovo. Med dodajanjem nenehno mešajte.\n"
+                            +
+                            "6. Ko je riž kuhan 'al dente', vmešajte kocko hladnega masla, nariban parmezan in pripravljene gambere.\n"
+                            +
+                            "7. Pustite počivati 2 minuti, preden postrežete.",
                     2,
                     userMaja,
                     new Sestavine("Riž Arborio", "200g"),
@@ -120,8 +162,18 @@ public class DataInitializer implements CommandLineRunner {
             receptiRepository.save(r5);
 
             Recepti r6 = createRecept("Jabolčni Zavitek",
-                    "Klasičen štrudelj po babičino.",
-                    "1. Olupi in naribaj jabolka.\n2. Dodaj cimet in sladkor.\n3. Zavij v vlečeno testo.\n4. Peci 45 min na 180 stopinjah.",
+                    "Tradicionalni jabolčni zavitek s hrustljavim testom in sočnim nadevom, kot so ga pripravljale naše babice.",
+                    "1. Jabolka olupite, jim odstranite peščišča in jih naribajte na tanke rezine ali lističe.\n" +
+                            "2. Naribanim jabolkom dodajte sladkor, cimet, vanilijev sladkor in po želji pesti rozin ter mletih orehov.\n"
+                            +
+                            "3. List vlečenega testa pokapljajte s stopljenim maslom, nanj položite naslednji list in postopek ponovite.\n"
+                            +
+                            "4. Jabolčni nadev enakomerno razporedite po spodnji tretjini testa, robove pa zavihajte navznoter.\n"
+                            +
+                            "5. Zavitek previdno zrolajte in ga položite v pekač, obložen s papirjem za peko.\n" +
+                            "6. Premažite ga z raztopljenim maslom in pecite v ogreti pečici na 180°C približno 40-45 minut, da postane zlato rjav.\n"
+                            +
+                            "7. Pred serviranjem ga potresite s sladkorjem v prahu.",
                     6,
                     userAna,
                     new Sestavine("Jabolka", "1kg"),

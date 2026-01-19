@@ -1,0 +1,146 @@
+.pageContainer {
+    min-height: 100vh;
+    background-color: var(--bg-color);
+    background-image: 
+        radial-gradient(at 0% 0%, var(--bg-gradient-1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, var(--bg-gradient-2) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, var(--bg-gradient-3) 0, transparent 50%);
+    color: var(--text-primary);
+}
+
+.header {
+    padding: 60px 20px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.contentWrapper {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 32px;
+    padding: 0 40px 60px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.sidebar {
+    position: sticky;
+    top: 100px;
+}
+
+.mainContent {
+    min-width: 0;
+}
+
+/* Card overrides for Jedilnik specific items */
+.jedilnikCard {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+}
+
+.jedilnikCard:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.jedilnikHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.jedilnikTitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.jedilnikBadge {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.recipeList {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.recipeItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: var(--item-bg);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border: 1px solid var(--card-border);
+}
+
+.recipeName {
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.recipeName:hover {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}
+
+.formBox {
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 24px;
+    border: 1px solid var(--card-border);
+}
+
+.formTitle {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    color: var(--text-primary);
+}
+
+@media (max-width: 1024px) {
+    .contentWrapper {
+        grid-template-columns: 1fr;
+    }
+}
