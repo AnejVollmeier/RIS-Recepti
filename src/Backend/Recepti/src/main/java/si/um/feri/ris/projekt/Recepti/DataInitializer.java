@@ -2,8 +2,10 @@ package si.um.feri.ris.projekt.Recepti;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import si.um.feri.ris.projekt.Recepti.dao.JedilnikDao;
 import si.um.feri.ris.projekt.Recepti.dao.ReceptiJpaDao;
 import si.um.feri.ris.projekt.Recepti.dao.UporabnikDao;
 import si.um.feri.ris.projekt.Recepti.vao.*;
@@ -13,10 +15,13 @@ public class DataInitializer implements CommandLineRunner {
 
     private final ReceptiJpaDao receptiRepository;
     private final UporabnikDao uporabnikRepository;
+    private final JedilnikDao jedilnikRepository;
 
-    public DataInitializer(ReceptiJpaDao receptiRepository, UporabnikDao uporabnikRepository) {
+    public DataInitializer(ReceptiJpaDao receptiRepository, UporabnikDao uporabnikRepository,
+            JedilnikDao jedilnikRepository) {
         this.receptiRepository = receptiRepository;
         this.uporabnikRepository = uporabnikRepository;
+        this.jedilnikRepository = jedilnikRepository;
     }
 
     @Override
@@ -127,6 +132,26 @@ public class DataInitializer implements CommandLineRunner {
             addKomentar(r6, userMaja, "Prav asocira na otroštvo!");
             addOcena(r6, userMaja, 5);
             receptiRepository.save(r6);
+
+            // 3. Ustvari demo jedilnike
+            Jedilnik j1 = new Jedilnik("Študentski teden", LocalDate.now().plusDays(1), 2);
+            j1.setUporabnik(userDemo);
+            j1.addRecept(r1);
+            j1.addRecept(r2);
+            j1.addRecept(r4);
+            jedilnikRepository.save(j1);
+
+            Jedilnik j2 = new Jedilnik("Romantična večerja", LocalDate.now().plusDays(3), 2);
+            j2.setUporabnik(userMaja);
+            j2.addRecept(r5);
+            j2.addRecept(r6);
+            jedilnikRepository.save(j2);
+
+            Jedilnik j3 = new Jedilnik("Nedeljsko kosilo", LocalDate.now().plusDays(6), 4);
+            j3.setUporabnik(userAna);
+            j3.addRecept(r3);
+            j3.addRecept(r1);
+            jedilnikRepository.save(j3);
 
             System.out.println("DEMO Podatki so bili uspešno inicializirani!");
         }
